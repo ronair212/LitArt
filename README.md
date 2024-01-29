@@ -1,70 +1,15 @@
-# MLOps Labs Repository
+# LitArt- Books to Artistic Covers
 
-## Overview
+For the "Best Books (10k) Multi-Genre Data" project, our primary challenge lies in effectively processing and utilizing the large and varied dataset of book information. The project aims to address several key issues:
+●	Comprehensive Data Analysis: The dataset includes a vast array of genres, requiring sophisticated methods to accurately understand and categorize each book based on its content and thematic elements.
+●	Summary Generation: The ability to distill lengthy book descriptions into concise summaries poses a significant challenge, requiring advanced natural language processing techniques to capture the core narrative and themes.
+●	Creative Cover Generation: The task of generating book covers that are not only visually appealing but also accurately reflect the book's content is a complex creative endeavor. This involves integrating artistic design with an understanding of the book's themes, genre, and tone.
+●	Comparison and Evaluation: A crucial part of our project involves comparing the generated book covers with the original ones. This requires developing criteria and methods for effectively evaluating the accuracy, relevance, and aesthetic appeal of the covers.
 
-Welcome to the MLOps Labs Repository! This repository is dedicated to sharing the labs and exercises for the MLOps (Machine Learning Operations) course at Northeastern University. The primary goal of this repository is to provide a centralized platform for students, instructors, and anyone interested in MLOps to access and collaborate on course-related materials.
+By tackling these challenges, our project outcome aims to blend technology and art, offering fresh perspectives on how books are summarized and visually represented. This is a steppingstone in the overall text to image hurdles that current generative models face.
 
-## Table of Contents
+Currently this problem is being explored in the creative space for businesses that need quick turnaround for designs on the fly. The traditional process that goes for generating art or any marketing material goes through tedious amounts of changes back and forth between the client and the designer. These notorious changes are the bane of designers working in the commercial sector, making them bow down to the smallest countenances by clients. 
 
-- [Introduction](#introduction)
-- [Course Description](#course-description)
-- [Lab Content](#lab-content)
-- [Getting Started](#getting-started)
-- [Contributing](#contributing)
-- [License](#license)
+We would be measuring the success of our product by the turnaround time of our model giving the desired output. This time is crucial since a model would not feel exhausted with the continuously requested miniscule changes as compared to a human designer.
 
-## Introduction
-
-MLOps is an emerging discipline that focuses on the collaboration and communication of both data scientists and IT professionals while automating and streamlining the machine learning lifecycle. It bridges the gap between machine learning development and production deployment, ensuring that machine learning models are scalable, reproducible, and maintainable. This repository serves as a resource hub for students and instructors of Northeastern University's MLOps course.
-
-## Course Description
-
-The MLOps course at Northeastern University is designed to provide students with a comprehensive understanding of the MLOps field. Throughout the course, students will learn how to:
-
-- Build end-to-end machine learning pipelines
-- Deploy machine learning models to production
-- Monitor and maintain ML systems
-- Implement CI/CD (Continuous Integration/Continuous Deployment) for ML
-- Containerize and orchestrate ML workloads
-- Handle data drift and model retraining
-
-This repository hosts the labs, code samples, and documentation related to these topics.
-
-## Lab Content
-
-The labs in this repository are organized according to the topics covered in the MLOps course. Each lab may include code examples, Jupyter notebooks, configuration files, and relevant documentation. Some of the key topics covered in the labs include:
-
-- Data preprocessing and feature engineering
-- Model training and evaluation
-- Model deployment using containerization (e.g., Docker) and orchestration (e.g., Kubernetes)
-- Monitoring and logging of deployed models
-- CI/CD for ML pipelines
-- Handling data drift and retraining models
-
-## Getting Started
-
-To get started with the labs and exercises in this repository, please follow these steps:
-
-1. Clone this repository to your local machine.
-2. Navigate to the specific lab you are interested in.
-3. Read the lab instructions and review any accompanying documentation.
-4. Follow the provided code samples and examples to complete the lab exercises.
-5. Feel free to explore, modify, and experiment with the code to deepen your understanding.
-
-For more detailed information on each lab and prerequisites, please refer to the lab's README or documentation.
-
-## Contributing
-
-Contributions to this repository are welcome! If you are a student or instructor and would like to contribute your own labs, improvements, or corrections, please follow these guidelines:
-
-1. Fork this repository.
-2. Create a branch for your changes.
-3. Make your changes and commit them with clear, concise messages.
-4. Test your changes to ensure they work as expected.
-5. Submit a pull request to the main repository.
-
-Your contributions will help improve the overall quality of the labs and benefit the entire MLOps community.
-
-## License
-
-This repository is open-source and is distributed under the [MIT License](LICENSE). Please review the license for more details on how you can use and share the content within this repository.
+With this in mind, our envisioned 'ideal state' is achieved once the issue is resolved, and our model consistently generates accurate imagery for the relevant literature it is presented with.
