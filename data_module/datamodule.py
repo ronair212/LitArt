@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 import pandas as pd
 import lightning as L
 
-class DataModule(L.LightningDataModule):
+class TextDataModule(L.LightningDataModule):
     def __init__(self, data_dir: str = "path/to/dir", batch_size: int = 32):
         super().__init__()
         self.data_dir = data_dir
@@ -37,3 +37,28 @@ class DataModule(L.LightningDataModule):
     def teardown(self, stage: str):
         # Used to clean-up when the run is finished
         ...
+
+class ImageDataModule(L.LightningModule):
+    def __init__(self, data_dir: str = "path/to/dir", batch_size: int = 32):
+        super().__init__()
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+
+    def prepare_data(self):
+        pass
+
+    def setup(self, stage: str):
+        ## Image Data
+        pass
+
+    def train_dataloader(self):
+        return DataLoader(self.traindataset, batch_size=self.batch_size)
+
+    def val_dataloader(self):
+        return DataLoader(self.valdataset, batch_size=self.batch_size)
+
+    def test_dataloader(self):
+        return DataLoader(self.testdataset, batch_size=self.batch_size)
+
+    def predict_dataloader(self):
+        return DataLoader(self.predict, batch_size=self.batch_size)
