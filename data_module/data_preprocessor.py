@@ -7,7 +7,14 @@ import contractions
 
 
 class TextPreprocessing():
-    def __init__(self , regexList = None, punct= True, lowercase= True, slang= False, stopwordList = None, stemming = False, lemmatization= False ):
+    def __init__(self ,
+                 regexList = None,
+                 punct= True,
+                 lowercase= True,
+                 slang= False,
+                 stopwordList = None,
+                 stemming = False,
+                 lemmatization= False ):
 
         self.convertToLowercase = lowercase #Done
         self.removePunctuations = punct #Done
