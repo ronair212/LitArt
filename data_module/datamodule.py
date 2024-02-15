@@ -1,3 +1,6 @@
+import glob
+import pandas as pd
+
 import dataset
 from torch.utils.data import DataLoader
 import pandas as pd
@@ -39,13 +42,17 @@ class TextDataModule(L.LightningDataModule):
         ...
 
 class ImageDataModule(L.LightningModule):
-    def __init__(self, data_dir: str = "path/to/dir", batch_size: int = 32):
+    def __init__(self, data_dir: str = "path/to/dir",
+                 batch_size: int = 32):
         super().__init__()
+
         self.data_dir = data_dir
         self.batch_size = batch_size
 
     def prepare_data(self):
-        pass
+        image_paths = glob.glob(data_dir+'bookcovers/*.jpg')
+        text = pd
+
 
     def setup(self, stage: str):
         ## Image Data
