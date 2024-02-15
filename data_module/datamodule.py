@@ -28,26 +28,24 @@ class TextSummaryDataset(Dataset):
         self.tokenizer_summary_max_length = tokenizer_summary_max_length
         self.truncation = truncation
 
+    def __len__(self):
+        return len(self.chapter)
 
-        def __len__(self):
-            return len(df)
+    def __getitem__(self,idx):
+        chapter = "summarize:" + str(self.textprocessor.process(self.chapter[idx]))
+        summary = self.textprocessor.process(self.summary[idx])
 
-        def __getitem__(self,idx):
-            chapter = "summarize:" + str(textprocessor.process(self.chapter[idx]))
-            summary = textprocessor.process(self.summary[idx])
+        input_encodings = self.tokenizer(chapter, max_length=self.tokenizer_chapter_max_length,padding="max_length", truncation=self.truncation)
 
-            input_encodings = tokenizer(chapter, max_length=self.tokenizer_chapter_max_length, truncation=self.truncation)
+        with self.tokenizer.as_target_tokenizer():
+            target_encodings = self.tokenizer(summary, max_length=self.tokenizer_summary_max_length,padding="max_length", truncation=self.truncation)
 
-            with tokenizer.as_target_tokenizer():
-                target_encodings = tokenizer(summary, max_length=self.tokenizer_summary_max_length, truncation=self.truncation)
-
-            return {
-                "input_ids": torch.tensor(input_encodings["input_ids"], dtype=torch.long),
-                "attention_mask": torch.tensor(input_encodings["attention_mask"], dtype=torch.long),
-                "labels": torch.tensor(target_encodings["input_ids"], dtype=torch.long),
-                "summary_mask": torch.tensor(target_encodings["attention_mask"], dtype=torch.long)
-            }
-
+        return {
+            "input_ids": torch.tensor(input_encodings["input_ids"], dtype=torch.long),
+            "attention_mask": torch.tensor(input_encodings["attention_mask"], dtype=torch.long),
+            "labels": torch.tensor(target_encodings["input_ids"], dtype=torch.long),
+            "summary_mask": torch.tensor(target_encodings["attention_mask"], dtype=torch.long)
+        }
 
 class TextDataModule(L.LightningDataModule):
     def __init__(self,
@@ -125,20 +123,45 @@ class TextDataModule(L.LightningDataModule):
             self.train_dataset,
             batch_size=self.batch_size,
             shuffle=True,
-            num_workers=4)
+            num_workers=0)
 
     def val_dataloader(self):
         return DataLoader(
             self.val_dataset,
             batch_size=self.batch_size,
-            num_workers=4)
+            num_workers=0)
 
     def test_dataloader(self):
         return DataLoader(
             self.test_dataset,
             batch_size=self.batch_size,
-            num_workers=4
+            num_workers=0
         )
+
+class ImageDataModule(L.LightningModule):
+    def __init__(self, data_dir: str = "path/to/dir", batch_size: int = 32):
+        super().__init__()
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+
+    def prepare_data(self):
+        pass
+
+    def setup(self, stage: str):
+        ## Image Data
+        pass
+
+    def train_dataloader(self):
+        return DataLoader(self.traindataset, batch_size=self.batch_size)
+
+    def val_dataloader(self):
+        return DataLoader(self.valdataset, batch_size=self.batch_size)
+
+    def test_dataloader(self):
+        return DataLoader(self.testdataset, batch_size=self.batch_size)
+
+    def predict_dataloader(self):
+        return DataLoader(self.predict, batch_size=self.batch_size)
 
 class ImageDataModule(L.LightningModule):
     def __init__(self, data_dir: str = "path/to/dir", batch_size: int = 32):
@@ -167,26 +190,26 @@ class ImageDataModule(L.LightningModule):
 
 
 
-# Training files setup
-train_path = "../Datasets/Training_data.csv"
-test_path = "../Datasets/Testing_data.csv"
-val_path = "../Datasets/Validation_data.csv"
+# # Training files setup
+# train_path = "../Datasets/Training_data.csv"
+# test_path = "../Datasets/Testing_data.csv"
+# val_path = "../Datasets/Validation_data.csv"
 
-# Text Preprocessor setup
-textpreprocessor = TextPreprocessing()
+# # Text Preprocessor setup
+# textpreprocessor = TextPreprocessing()
 
-# Tokenizer Setup
-model_ckpt = "google/pegasus-cnn_dailymail"
-tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
-# model_pegasus = AutoModelForSeq2SeqLM.from_pretrained(model_ckpt).to(device)
+# # Tokenizer Setup
+# model_ckpt = "google/pegasus-cnn_dailymail"
+# tokenizer = AutoTokenizer.from_pretrained(model_ckpt)
+# # model_pegasus = AutoModelForSeq2SeqLM.from_pretrained(model_ckpt).to(device)
 
-textmodule = TextDataModule(train_path=train_path,
-                                     val_path=val_path,
-                                     test_path=test_path,
-                                     textprocessor=textpreprocessor,
-                                     tokenizer=tokenizer,
-                                     tokenizer_chapter_max_length=1024,
-                                     tokenizer_summary_max_length=64,
-                                     truncation=True)
-textmodule.setup()
+# textmodule = TextDataModule(train_path=train_path,
+#                                      val_path=val_path,
+#                                      test_path=test_path,
+#                                      textprocessor=textpreprocessor,
+#                                      tokenizer=tokenizer,
+#                                      tokenizer_chapter_max_length=1024,
+#                                      tokenizer_summary_max_length=64,
+#                                      truncation=True)
+# textmodule.setup()
 
