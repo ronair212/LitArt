@@ -25,21 +25,39 @@ class ImageDataset(Dataset):
         return image, summary
 
 class TextSummaryDataset(Dataset):
-    def __init__(self, data_file, transform=None, target_transform=None):
-        self.data = pd.read_csv(data_file, names=["text", "summary"])
-        self.transform = transform
-        self.target_transform = target_transform
+    def __init__(self,
+                 df,
+                 textprocessor,
+                 tokenizer,
+                 tokenizer_chapter_max_length=1024,
+                 tokenizer_summary_max_length=64,
+                 truncation=True,
+                 ):
+
+        self.df = df
+        self.textprocessor = textprocessor
+        self.chapter = df["chapter"]
+        self.summary = df["summary_text"]
+        self.tokenizer = tokenizer
+        self.tokenizer_chapter_max_length = tokenizer_chapter_max_length
+        self.tokenizer_summary_max_length = tokenizer_summary_max_length
+        self.truncation = truncation
 
     def __len__(self):
-        return len(self.data)
+        return len(self.chapter)
 
-    def __getitem__(self, idx):
-        text = self.data.iloc[idx, 0]
-        summary = self.data.iloc[idx, 1]
-        
-        if self.transform:
-            text = self.transform(text)
-        if self.target_transform:
-            summary = self.target_transform(summary)
-            
-        return text, summary
+    def __getitem__(self,idx):
+        chapter = "summarize:" + str(self.textprocessor.process(self.chapter[idx]))
+        summary = self.textprocessor.process(self.summary[idx])
+
+        input_encodings = self.tokenizer(chapter, max_length=self.tokenizer_chapter_max_length,padding="max_length", truncation=self.truncation)
+
+        with self.tokenizer.as_target_tokenizer():
+            target_encodings = self.tokenizer(summary, max_length=self.tokenizer_summary_max_length,padding="max_length", truncation=self.truncation)
+
+        return {
+            "input_ids": torch.tensor(input_encodings["input_ids"], dtype=torch.long),
+            "attention_mask": torch.tensor(input_encodings["attention_mask"], dtype=torch.long),
+            "labels": torch.tensor(target_encodings["input_ids"], dtype=torch.long),
+            "summary_mask": torch.tensor(target_encodings["attention_mask"], dtype=torch.long)
+        }

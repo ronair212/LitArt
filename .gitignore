@@ -2,3 +2,4 @@ Datasets/
 sample_output/
 */sample_inputs/
 *checkpoints*
+notebooks/lightning_logs
