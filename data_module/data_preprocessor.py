@@ -84,10 +84,10 @@ class TextPreprocessing():
 
         return text
 
-preprocessor = TextPreprocessing(slang=True)
+# preprocessor = TextPreprocessing(slang=True)
 
-sample = "I can't do this"
+# sample = "I can't do this"
 
-print(f"Before preprocessing :{sample}")
-print(f"After preprocessing :{preprocessor.process(sample)}")
+# print(f"Before preprocessing :{sample}")
+# print(f"After preprocessing :{preprocessor.process(sample)}")
 
