@@ -1,31 +1,33 @@
 import sys
+import os
 # append a new directory to sys.path
-sys.path.append('/home/verma.shi/LLM/LitArt/')
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append('/home/verma.shi/LLM/LitArt/data_module')
+sys.path.append('/home/verma.shi/LLM/LitArt/models')
 
 import argparse
-import os
 import time
 
 import torch
 import lightning as L
 from lightning.pytorch.callbacks import ModelCheckpoint,EarlyStopping
 
-# from data_module.data_preprocessor import TextPreprocessing
+from data_module.data_preprocessor import TextPreprocessing
 from data_module.dataset import TextSummaryDataset
 from data_module.datamodule import TextDataModule
+
 from models.summarizer import TextSummaryModel
 
-
 import transformers
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
-from transformers import pipeline
-from transformers import pipeline, set_seed
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from transformers import T5ForConditionalGeneration, T5Tokenizer
+from transformers import pipeline, set_seed
 from transformers import get_linear_schedule_with_warmup, AdamW
 
 import warnings
 warnings.filterwarnings("ignore")
+
+torch.set_float32_matmul_precision('medium')
 
 if __name__ == "__main__":
 
@@ -49,25 +51,39 @@ if __name__ == "__main__":
 
     #Fine Tunining Parameters
     parser.add_argument('--batchsize',
-                    type=str,help='Batchsize')
+                    type=int,help='Batchsize')
     parser.add_argument('--chapterlength',
-                    type=str,help='Chapter Length')
+                    type=int,help='Chapter Length')
     parser.add_argument('--summarylength',
-                    type=str,help='Summary Length')
+                    type=int,help='Summary Length')
     parser.add_argument('--num_epochs',
-                    type=str,help='Number of epochs')
+                    type=int,help='Number of epochs')
 
     #Logging details
     parser.add_argument('--log_path',
                 type=str,help='Path to save logs')
 
+    #Model Cache dir
+
+    parser.add_argument('--cache_dir',
+                type=str,help="Cache directory location")
+
     args = parser.parse_args()
+
+
 
 
     #Loading the data
     train_path = args.trainpath
     test_path = args.testpath
     val_path = args.valpath
+
+    #Loading the model and tokenizer
+    base_model_name = args.model
+    tokenizer_name = args.tokenizer
+    cache_dir = args.cache_dir
+    base_model = AutoModelForSeq2SeqLM.from_pretrained(base_model_name,cache_dir=cache_dir).to(device)
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name,cache_dir=cache_dir)
 
     #Initializing the dataloaders
     textpreprocessor = TextPreprocessing()
@@ -85,8 +101,6 @@ if __name__ == "__main__":
     total_documents = textmodule.total_documents()
 
     #Model Parameters
-    base_model_name = args.model
-    tokenizer = args.tokenizer
     batch_size = args.batchsize
     chapter_length = args.chapterlength
     summary_length = args.summarylength
@@ -111,11 +125,12 @@ if __name__ == "__main__":
         default_root_dir = log_path
     )
 
-    tokenizer = AutoModelForSeq2SeqLM.from_pretrained(model)
-    base_model = AutoTokenizer.from_pretrained("t5-small")
 
+    #Loading the model
+    model = TextSummaryModel(model=base_model,epochs=epochs,total_documents=total_documents)
 
+    #Fitting the model
+    trainer.fit(model, textmodule)
 
-
-
-    print(model_name)
+    best_model_path = checkpoint_callback.best_model_path
+    print(f'Best Model Path = {best_model_path}')

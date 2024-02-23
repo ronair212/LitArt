@@ -15,9 +15,12 @@ import re
 
 class TextSummaryModel(L.LightningModule):
     def __init__(self,model,
+                     total_documents = 5000,
                      epochs=2):
         super(TextSummaryModel,self).__init__()
         self.model = model
+        self.epochs = int(epochs)
+        self.total_documents = int(total_documents)
 
 
     def set_model(self,model):
@@ -79,5 +82,5 @@ class TextSummaryModel(L.LightningModule):
         optimizer = AdamW(self.model.parameters(), lr=0.0001)
         scheduler = get_linear_schedule_with_warmup(
                 optimizer, num_warmup_steps=0,
-                num_training_steps=epochs*total_documents)
+                num_training_steps=self.epochs*self.total_documents)
         return {'optimizer': optimizer, 'lr_scheduler': scheduler}

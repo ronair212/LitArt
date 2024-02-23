@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import torch
 from torchvision.io import read_image
 from torch.utils.data import Dataset
 
