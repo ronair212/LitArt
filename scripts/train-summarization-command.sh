@@ -1,1 +1,0 @@
-python train.py --model "google/flan-t5-base" --tokenizer "google/flan-t5-base" --trainpath "../Datasets/Training_data.csv" --testpath "../Datasets/Testing_data.csv" --valpath "../Datasets/Validation_data.csv" --batchsize 32 --chapterlength 512 --summarylength 64 --num_epochs 1 --log_path '/work/LitArt/verma/lightning_logs' --cache_dir  '/work/LitArt/cache'

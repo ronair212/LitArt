@@ -48,7 +48,7 @@ class TextSummaryDataset(Dataset):
         return len(self.chapter)
 
     def __getitem__(self,idx):
-        chapter = "summarize:" + str(self.textprocessor.process(self.chapter[idx]))
+        chapter = "Summarize the following : \n" + str(self.textprocessor.process(self.chapter[idx])) + "\n\nSummary:"
         summary = self.textprocessor.process(self.summary[idx])
 
         input_encodings = self.tokenizer(chapter, max_length=self.tokenizer_chapter_max_length,padding="max_length", truncation=self.truncation)

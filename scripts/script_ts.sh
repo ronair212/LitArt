@@ -1,0 +1,5 @@
+# python train_text.py --model "google-t5/t5-small" --tokenizer "google-t5/t5-small" --trainpath "../Datasets/Training_data.csv" --testpath "../Datasets/Testing_data.csv" --valpath "../Datasets/Validation_data.csv" --batchsize 16 --chapterlength 512 --summarylength 64 --num_epochs 3 --log_path '/work/LitArt/verma/' --cache_dir  '/work/LitArt/cache'
+
+# python train_text.py --model "google/pegasus-xsum" --tokenizer "google/pegasus-xsum" --trainpath "../Datasets/Training_data.csv" --testpath "../Datasets/Testing_data.csv" --valpath "../Datasets/Validation_data.csv" --batchsize 16 --chapterlength 512 --summarylength 64 --num_epochs 10 --log_path '/work/LitArt/verma/' --cache_dir  '/work/LitArt/cache'
+
+# python train_text.py --model "google/pegasus-large" --tokenizer "google/pegasus-large" --trainpath "../Datasets/Training_data.csv" --testpath "../Datasets/Testing_data.csv" --valpath "../Datasets/Validation_data.csv" --batchsize 32 --chapterlength 1024 --summarylength 128 --num_epochs 10 --log_path '/work/LitArt/verma/' --cache_dir  '/work/LitArt/cache'
