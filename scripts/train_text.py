@@ -8,6 +8,7 @@ sys.path.append('/home/verma.shi/LLM/LitArt/models')
 import argparse
 import time
 import json
+from datetime import date
 
 import torch
 import lightning as L
@@ -109,8 +110,10 @@ if __name__ == "__main__":
     textdatamodule.setup()
     total_documents = textdatamodule.total_documents()
 
+    today = date.today()
+
     #Simplified Log 
-    log_path = log_path+base_model_name.replace("/","-")+"-" + time.strftime("%H:%M:%S", time.localtime())
+    log_path = log_path+base_model_name.replace("/","-")+"-" +str(today)+"-"+time.strftime("%H:%M:%S", time.localtime())
     logger = TensorBoardLogger(log_path, name="my_model")
     
     run_config = {
