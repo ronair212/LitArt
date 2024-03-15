@@ -1,7 +1,13 @@
+
+import sys
+import os
+# append a new directory to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append('/home/verma.shi/LLM/LitArt/data_module')
+
 import glob
 import pandas as pd
-
-import dataset
+from data_module.dataset import TextSummaryDataset
 import torch
 from torch.utils.data import Dataset, DataLoader, RandomSampler
 import pandas as pd
@@ -65,6 +71,12 @@ class TextDataModule(L.LightningDataModule):
             self.val_df = pd.read_csv(self.val_path)
         except Exception as e:
             print(f"Exception raised while reading validation file at path : {self.val_path} \n Exception : {e}")
+
+    def total_documents(self):
+        
+        total_documents = self.train_df.shape[0] + self.test_df.shape[0] + self.val_df.shape[0]
+
+        return total_documents
 
 
     def setup(self, stage= None):
