@@ -41,10 +41,13 @@ if __name__ == '__main__':
     parser.add_argument('-c','--chapter' ,
                         type=str, help='path to chapter to summarize')
     parser.add_argument('-s', '--summarizer',
+                        default="google/pegasus-xsum",
                         type=str,help='name of model used for summarization')
     parser.add_argument('-g','--generator',
+                        default="CompVis/stable-diffusion-v1-4",
                         type=str,help='name of model used for generation')
     parser.add_argument('-f','--filename',
+                        default="default",
                         type=str,help='name with which image is saved')
 
     args = parser.parse_args()

@@ -3,3 +3,5 @@ sample_output/
 */sample_inputs/
 *checkpoints*
 notebooks/lightning_logs
+data/
+*/trained_models/
