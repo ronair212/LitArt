@@ -79,8 +79,8 @@ class TextSummaryModel(L.LightningModule):
 
 
     def configure_optimizers(self):
-        optimizer = AdamW(self.model.parameters(), lr=0.0001)
+        optimizer = AdamW(self.model.parameters(), lr=0.001,weight_decay=0.01)
         scheduler = get_linear_schedule_with_warmup(
-                optimizer, num_warmup_steps=200,
+                optimizer, num_warmup_steps=500,
                 num_training_steps=self.epochs*self.total_documents)
         return {'optimizer': optimizer,'lr_scheduler': scheduler}

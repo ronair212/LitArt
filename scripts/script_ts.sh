@@ -14,9 +14,9 @@ python train_text.py \
 --trainpath "/work/LitArt/data/generated_summaries/train_dataset_with_summaries.csv" \
 --testpath "/work/LitArt/data/generated_summaries/test_dataset_with_summaries.csv" \
 --valpath "/work/LitArt/data/generated_summaries/validation_dataset_with_summaries.csv" \
---batchsize 16 \
+--batchsize 32 \
 --chapterlength 512 \
---summarylength 128 \
+--summarylength 64 \
 --num_epochs 10 \
 --log_path "/work/LitArt/verma/" \
 --cache_dir  "/work/LitArt/cache" 
