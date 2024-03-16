@@ -142,8 +142,7 @@ def split_chapters_into_chunks(dataset_dict):
     processed_datasets = {k: process_dataset(dataset_dict[k]) for k in dataset_dict.keys()}
     return DatasetDict(processed_datasets)
 
-# Assume `dataset_dict` is your input DatasetDict with 'train', 'validation', and 'test' datasets
-# You would call the function like this:
+
 new_dataset_dict = split_chapters_into_chunks(Dataset_dic)
 
 
@@ -260,7 +259,7 @@ import os
 
 import openai
 
-# Set your OpenAI API key
+# Set OpenAI API key
 openai.api_key = ""
 
 
@@ -295,8 +294,7 @@ def add_summary_to_datasets(dataset_dict):
     processed_datasets = {split: process_dataset(dataset_dict[split]) for split in dataset_dict.keys()}
     return DatasetDict(processed_datasets)
 
-# Assuming `dataset_dict` is your input DatasetDict with 'train', 'validation', and 'test' datasets
-# You would call the function like this:
+
 for i in range(len(new_dataset_dicts_list)):
     
     new_dataset_dict_with_summaries = add_summary_to_datasets(new_dataset_dicts_list[i])
@@ -315,6 +313,5 @@ for i in range(len(new_dataset_dicts_list)):
             df.to_csv(csv_path, index=False)
             print(f"Saved {split} dataset to {csv_path}")
 
-    # Assuming `new_dataset_dict_with_summaries` is your DatasetDict
     save_datasets_to_csv(new_dataset_dict_with_summaries)
 
