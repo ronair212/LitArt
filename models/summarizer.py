@@ -84,3 +84,4 @@ class TextSummaryModel(L.LightningModule):
                 optimizer, num_warmup_steps=500,
                 num_training_steps=self.epochs*self.total_documents)
         return {'optimizer': optimizer,'lr_scheduler': scheduler}
+
