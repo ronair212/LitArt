@@ -15,9 +15,12 @@ import re
 
 class TextSummaryModel(L.LightningModule):
     def __init__(self,model,
+                     total_documents = 5000,
                      epochs=2):
         super(TextSummaryModel,self).__init__()
         self.model = model
+        self.epochs = int(epochs)
+        self.total_documents = int(total_documents)
 
 
     def set_model(self,model):
@@ -46,7 +49,7 @@ class TextSummaryModel(L.LightningModule):
                             attention_mask = attention_mask,
                             labels = labels,
                             decoder_attention_mask = decoder_attention_mask)
-
+        self.log('train_loss', loss, prog_bar=True)
         return loss
 
     def validation_step(self , batch , batch_idx):
@@ -76,8 +79,9 @@ class TextSummaryModel(L.LightningModule):
 
 
     def configure_optimizers(self):
-        optimizer = AdamW(self.model.parameters(), lr=0.0001)
+        optimizer = AdamW(self.model.parameters(), lr=0.001,weight_decay=0.01)
         scheduler = get_linear_schedule_with_warmup(
-                optimizer, num_warmup_steps=0,
-                num_training_steps=epochs*total_documents)
-        return {'optimizer': optimizer, 'lr_scheduler': scheduler}
+                optimizer, num_warmup_steps=500,
+                num_training_steps=self.epochs*self.total_documents)
+        return {'optimizer': optimizer,'lr_scheduler': scheduler}
+

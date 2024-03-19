@@ -1,8 +1,14 @@
+
+import sys
+import os
+# append a new directory to sys.path
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append('/home/verma.shi/LLM/LitArt/data_module')
+
 import glob
 import os
 import shutil
-
-import dataset
+from data_module.dataset import TextSummaryDataset
 from datasets import  load_dataset
 
 import torch
@@ -28,6 +34,7 @@ class TextDataModule(L.LightningDataModule):
                  val_path,
                  textprocessor,
                  tokenizer,
+                 causal=False,
                  tokenizer_chapter_max_length=1024,
                  tokenizer_summary_max_length=64,
                  truncation = True,
@@ -51,6 +58,8 @@ class TextDataModule(L.LightningDataModule):
 
         # Tokenizer setup
         self.tokenizer = tokenizer
+        if causal == True:
+            self.tokenizer.pad_token = tokenizer.eos_token
         self.tokenizer_chapter_max_length = tokenizer_chapter_max_length
         self.tokenizer_summary_max_length = tokenizer_summary_max_length
         self.truncation = truncation
@@ -76,6 +85,12 @@ class TextDataModule(L.LightningDataModule):
             self.val_df = pd.read_csv(self.val_path)
         except Exception as e:
             print(f"Exception raised while reading validation file at path : {self.val_path} \n Exception : {e}")
+
+    def total_documents(self):
+        
+        total_documents = self.train_df.shape[0] + self.test_df.shape[0] + self.val_df.shape[0]
+
+        return total_documents
 
 
     def setup(self, stage= None):
