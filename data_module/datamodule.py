@@ -23,6 +23,7 @@ class TextDataModule(L.LightningDataModule):
                  val_path,
                  textprocessor,
                  tokenizer,
+                 causal=False,
                  tokenizer_chapter_max_length=1024,
                  tokenizer_summary_max_length=64,
                  truncation = True,
@@ -46,6 +47,8 @@ class TextDataModule(L.LightningDataModule):
 
         # Tokenizer setup
         self.tokenizer = tokenizer
+        if causal == True:
+            self.tokenizer.pad_token = tokenizer.eos_token
         self.tokenizer_chapter_max_length = tokenizer_chapter_max_length
         self.tokenizer_summary_max_length = tokenizer_summary_max_length
         self.truncation = truncation
