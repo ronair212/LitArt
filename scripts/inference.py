@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(1, '/home/patil.adwa/LitArt/utilities')
+
 import argparse
 import os
 import time
@@ -9,6 +12,8 @@ from transformers import pipeline, set_seed
 
 import torch
 from diffusers import StableDiffusionPipeline
+
+from helper_functions import text_to_prompt
 
 def summarize(chapter:str='',model_name:str= "google/pegasus-xsum")->str:
         
@@ -27,7 +32,9 @@ def generate(prompt:str='',model_name:str= "CompVis/stable-diffusion-v1-4",file_
     pipe = StableDiffusionPipeline.from_pretrained(model_name, torch_dtype=torch.float16)
     pipe = pipe.to(device)
 
-    image = pipe(prompt).images[0]  
+    image = pipe(prompt,
+                negative_prompt="B&w,cropping,open book,no edges, cropped book, small book, other objects,square,edges clipping",
+                guidance_scale=6.5,num_inference_steps=32).images[0]  
 
     image.save(f"../sample_output/{file_name}_{time.time()}.png")
 
@@ -63,12 +70,16 @@ if __name__ == '__main__':
     file_name = args.filename
 
     print("Generating summary....")
-    summary_text = summarize(chapter=chapter_text,
-                             model_name=s_model)
+    # summary_text = summarize(chapter=chapter_text,
+    #                          model_name=s_model)
 
-    print(f"Summary: {summary_text}")
+    print(f"Summary: {chapter_text}")
+
+    prompt = text_to_prompt(text=chapter_text)
+
+    print(f"Prompt: {prompt}")
     print("Generating Image....")
-    generate(prompt=summary_text,
+    generate(prompt=prompt,
              model_name=g_model,
              file_name=file_name)
     

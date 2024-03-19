@@ -1,39 +1,20 @@
 
-# export MODEL_NAME="CompVis/stable-diffusion-v1-4"
-# export INSTANCE_DIR="../data/"
-# export OUTPUT_DIR="./trained_models/"
-
-# accelerate launch train_text_to_image.py \
-#   --mixed_precision="fp16" \
-#   --pretrained_model_name_or_path=$MODEL_NAME  \
-#   --instance_data_dir=$INSTANCE_DIR \
-#   --output_dir=$OUTPUT_DIR \
-#   --instance_prompt="a <book cover> for a magical fantasy book" \
-#   --train_text_encoder \
-#   --resolution=512 \
-#   --train_batch_size=1 \
-#   --gradient_accumulation_steps=3 \
-#   --learning_rate=2e-6 \
-#   --lr_scheduler="DDIM" \
-#   --lr_warmup_steps=0 \
-#   --max_train_steps=400 \
-#   --gradient_checkpointing \
-#   --use_8bit_adam \
-
 export MODEL_NAME="CompVis/stable-diffusion-v1-4"
-export TRAIN_DIR="../data/"
-export OUTPUT_DIR="/work/LitArt/adwait/capstone/trained_models/model_1.1.0/"
+export TRAIN_DIR="/work/LitArt/adwait/capstone/data/fantasy_dataset"
+export OUTPUT_DIR="/work/LitArt/adwait/capstone/trained_models/genre_model_1.0.1/"
+export DATA_DIR="/work/LitArt/data/images_segregated/resolution_100/Fantasy.csv"
 
-accelerate launch train_text_to_image.py \
+accelerate launch train_generator.py \
   --pretrained_model_name_or_path=$MODEL_NAME \
   --train_data_dir=$TRAIN_DIR \
+  --original_data_path=$DATA_DIR \
   --use_ema \
   --resolution=512 \
-  --train_batch_size=8 \
-  --gradient_accumulation_steps=2 \
+  --train_batch_size=3 \
+  --gradient_accumulation_steps=1 \
   --gradient_checkpointing \
   --mixed_precision="fp16" \
-  --max_train_steps=1500 \
+  --max_train_steps=5 \
   --learning_rate=1e-05 \
   --max_grad_norm=1 \
   --lr_scheduler="constant" --lr_warmup_steps=0 \

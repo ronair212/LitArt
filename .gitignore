@@ -5,3 +5,5 @@ sample_output/
 notebooks/lightning_logs
 data/
 */trained_models/
+*.jpg
+*/__pycache__/*
