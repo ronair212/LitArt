@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.insert(1,"/home/patil.adwa/LitArt/LLama2")
+sys.path.insert(1,"/home/nair.ro/LitArt/LLama2")
 from models.inference_model import get_inference_model
 from utils.logger import save_generated_summary
 
@@ -27,8 +27,9 @@ def generate_response(chapter : str,model_dir:str) -> str:
     output = tokenizer.decode(outputs[0], skip_special_tokens=False)
     return extract_clean_response(output)
 
+#model_dir = '/work/LitArt/nair/outdir/meta-llama-Llama-2-7b-hf-2024-03-21-14:17:13'
 
-# summary_generated = generate_response(chapter)
-# print(summary_generated)
-# save_generated_summary(summary_generated)
+#summary_generated = generate_response(chapter , model_dir)
+#print(summary_generated)
+#save_generated_summary(summary_generated)
 

@@ -1,7 +1,7 @@
 import sys
 import os
-sys.path.insert(1, os.path.expanduser('~') + '/LitArt/utilities')
-sys.path.insert(2,'/home/patil.adwa/LitArt/')
+sys.path.insert(1, os.path.expanduser('~') + '/test/LitArt/utilities')
+sys.path.insert(2,'/home/nair.ro/LitArt/')
 
 import argparse
 import time
@@ -14,8 +14,8 @@ from transformers import pipeline, set_seed
 import torch
 from diffusers import StableDiffusionPipeline
 
-from helper_functions import text_to_prompt
 from LLama2.scripts.inference import generate_response
+from helper_functions import text_to_prompt
 
 def summarize(chapter:str='',model_name:str= "google/pegasus-xsum")->str:
         
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         summary_text = chapter_text
     print(f"Summary: {summary_text}")
 
-    prompt = text_to_prompt(text=chapter_text)
+    prompt = text_to_prompt(text=summary_text)
     print(f"Prompt: {prompt}")
     print("Generating Image....")
     generate(prompt=prompt,

@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
+sys.path.insert(1,'/home/nair.ro/LitArt/LLama2')
 
 
 def get_generation_config(model):
