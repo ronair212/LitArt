@@ -1,6 +1,6 @@
 import sys
-sys.path.insert(1,'/home/patil.adwa/LitArt/utilities')
-sys.path.insert(2,'/home/patil.adwa/LitArt/data_module')
+sys.path.insert(1,'/home/nair.ro/test/LitArt/utilities')
+sys.path.insert(2,'/home/nair.ro/LitArt/data_module')
 
 import argparse
 import logging
