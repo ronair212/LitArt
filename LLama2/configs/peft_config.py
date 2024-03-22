@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(1,'/home/nair.ro/test/LitArt/falcon')
+sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
 
 #USED IN FLACON. CHECK FOR LLAMA2 
 from peft import PeftConfig

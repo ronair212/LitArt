@@ -1,6 +1,7 @@
 import sys
-sys.path.insert(1,'/home/nair.ro/test/LitArt/falcon')
+sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
 import time
+from datetime import date
 import os
 import transformers
 import bitsandbytes as bnb
@@ -16,11 +17,12 @@ from peft import PeftModel
 from peft import get_peft_model
 from peft import prepare_model_for_kbit_training
 
-from Llama2.utils.parameters import log_path
-
+from utils.parameters import log_path
+from utils.parameters import base_model_name
 today = date.today()
 
-
+#cd /work/LitArt/nair/outdir/meta-llama-Llama-2-7b-hf-2024-03-21-14:17:13/
+model = base_model_name
 log_path = log_path+model.replace("/","-")+"-" +str(today)+"-"+time.strftime("%H:%M:%S", time.localtime())
 
 from lightning.pytorch.loggers import TensorBoardLogger

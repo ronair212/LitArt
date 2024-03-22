@@ -1,5 +1,6 @@
 import sys
-sys.path.insert(1,'/home/nair.ro/test/LitArt/falcon')
+import os
+sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
 
 
 from datetime import date

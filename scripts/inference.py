@@ -1,8 +1,9 @@
 import sys
-sys.path.insert(1, '/home/patil.adwa/LitArt/utilities')
+import os
+sys.path.insert(1, os.path.expanduser('~') + '/LitArt/utilities')
+sys.path.insert(2,'/home/patil.adwa/LitArt/')
 
 import argparse
-import os
 import time
 
 import transformers
@@ -14,6 +15,7 @@ import torch
 from diffusers import StableDiffusionPipeline
 
 from helper_functions import text_to_prompt
+from LLama2.scripts.inference import generate_response
 
 def summarize(chapter:str='',model_name:str= "google/pegasus-xsum")->str:
         
@@ -31,7 +33,9 @@ def generate(prompt:str='',model_name:str= "CompVis/stable-diffusion-v1-4",file_
 
     pipe = StableDiffusionPipeline.from_pretrained(model_name, torch_dtype=torch.float16)
     pipe = pipe.to(device)
-
+    print("--------------")
+    print("Device:",device)
+    print("-------------")
     image = pipe(prompt,
                 negative_prompt="B&w,cropping,open book,no edges, cropped book, small book, other objects,square,edges clipping",
                 guidance_scale=6.5,num_inference_steps=32).images[0]  
@@ -70,13 +74,16 @@ if __name__ == '__main__':
     file_name = args.filename
 
     print("Generating summary....")
+    if s_model=='Llama':
+        summary_text = generate_response(chapter=chapter_text,
+                                        model_dir="/work/LitArt/nair/outdir/meta-llama-Llama-2-7b-hf-2024-03-21-14:17:13")
     # summary_text = summarize(chapter=chapter_text,
     #                          model_name=s_model)
-
-    print(f"Summary: {chapter_text}")
+    else:
+        summary_text = chapter_text
+    print(f"Summary: {summary_text}")
 
     prompt = text_to_prompt(text=chapter_text)
-
     print(f"Prompt: {prompt}")
     print("Generating Image....")
     generate(prompt=prompt,

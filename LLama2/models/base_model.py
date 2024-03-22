@@ -1,12 +1,12 @@
 import sys
-sys.path.insert(1,'/home/nair.ro/test/LitArt/falcon')
+sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from Llama2.configs.bnb_config import get_bnb_config
-from Llama2.utils.parameters import base_model_name, tokenizer_name, cache_dir
+from configs.bnb_config import get_bnb_config
+from utils.parameters import base_model_name, tokenizer_name, cache_dir
 from peft import prepare_model_for_kbit_training
-from Llama2.utils.logger import print_trainable_parameters
+from utils.logger import print_trainable_parameters
 
 def get_base_model():
     bnb_config = get_bnb_config()
