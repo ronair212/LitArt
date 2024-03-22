@@ -1,18 +1,18 @@
 import sys
-sys.path.insert(1,'/home/nair.ro/test/LitArt/falcon')
+sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
 
 
 import transformers
 from trl import SFTTrainer
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
 
-from Llama2.models.base_model import get_base_model
-from Llama2.data.tokenization import tokenize_input
-from Llama2.data.dataset import load_dataset_FN
-from Llama2.configs.bnb_config import get_bnb_config
-from Llama2.configs.lora_config import get_lora_config
-from Llama2.utils.logger import get_logger , save_hyperparameters 
-from Llama2.utils.parameters import (batch_size, epochs, gradient_accumulation_steps, learning_rate, 
+from models.base_model import get_base_model
+from data.tokenization import tokenize_input
+from data.dataset import load_dataset_FN
+from configs.bnb_config import get_bnb_config
+from configs.lora_config import get_lora_config
+from utils.logger import get_logger , save_hyperparameters 
+from utils.parameters import (batch_size, epochs, gradient_accumulation_steps, learning_rate, 
                                      save_total_limit, logging_steps, output_dir, max_steps, log_path)
 
 def train_model():

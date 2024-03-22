@@ -1,9 +1,9 @@
 import sys
-sys.path.insert(1,'/home/nair.ro/test/LitArt/falcon')
+sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
 
 import torch
 from transformers import BitsAndBytesConfig
-from Llama2.utils.parameters import quant_4bit, quant_8bit
+from utils.parameters import quant_4bit, quant_8bit
 
 
 def get_bnb_config():

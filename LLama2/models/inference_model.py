@@ -1,10 +1,10 @@
 import sys
-sys.path.insert(1,'/home/nair.ro/test/LitArt/falcon')
+sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
 
 import torch
-from Llama2.configs.bnb_config import get_bnb_config
-from Llama2.configs.peft_config import get_peft_config
-from Llama2.utils.parameters import cache_dir
+from configs.bnb_config import get_bnb_config
+from configs.peft_config import get_peft_config
+from utils.parameters import cache_dir
 from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
@@ -41,8 +41,8 @@ def get_inference_model(model_dir):
 
 
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
-    quantization_config = PeftConfig.from_pretrained(model_dir)
-    #quantization_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16)
+    #quantization_config = PeftConfig.from_pretrained(model_dir)
+    quantization_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16)
 
 
     model = AutoModelForCausalLM.from_pretrained(

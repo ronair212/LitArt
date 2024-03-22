@@ -1,6 +1,9 @@
-from LLama2.models.inference_model import get_inference_model
-from LLama2.utils.logger import save_generated_summary
+import sys
 import os
+sys.path.insert(1,"/home/patil.adwa/LitArt/LLama2")
+from models.inference_model import get_inference_model
+from utils.logger import save_generated_summary
+
 def extract_clean_response(input_string):
     # Split the input string by the marker "### Assistant:"
     parts = input_string.split("### Assistant: ")
@@ -16,7 +19,7 @@ def extract_clean_response(input_string):
         return "No response from LLM"
 
 
-def generate_response(chapter : str) -> str:
+def generate_response(chapter : str,model_dir:str) -> str:
     model, tokenizer = get_inference_model(model_dir)
     prompt =  f"""### USER: Summarize the following text : ' {chapter}' ### Assistant:  """.strip()
     inputs = tokenizer(prompt, return_tensors="pt").to(0)
@@ -25,7 +28,7 @@ def generate_response(chapter : str) -> str:
     return extract_clean_response(output)
 
 
-summary_generated = generate_response(chapter)
-print(summary_generated)
-save_generated_summary(summary_generated)
+# summary_generated = generate_response(chapter)
+# print(summary_generated)
+# save_generated_summary(summary_generated)
 

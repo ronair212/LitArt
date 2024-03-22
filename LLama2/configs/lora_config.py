@@ -1,7 +1,7 @@
 import sys
-sys.path.insert(1,'/home/nair.ro/test/LitArt/falcon')
+sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
 from peft import LoraConfig
-from Llama2.utils.parameters import r, lora_alpha, lora_dropout , attention_blocks_lora 
+from utils.parameters import r, lora_alpha, lora_dropout , attention_blocks_lora 
 
 def get_lora_config():
     
