@@ -1,7 +1,6 @@
 import sys
 import os
-sys.path.insert(1, os.path.expanduser('~') + '/test/LitArt/utilities')
-sys.path.insert(2,'/home/nair.ro/LitArt/')
+sys.path.insert(1, os.path.expanduser('~') + '/LitArt/')
 
 import argparse
 import time
@@ -15,7 +14,7 @@ import torch
 from diffusers import StableDiffusionPipeline
 
 from LLama2.scripts.inference import generate_response
-from helper_functions import text_to_prompt
+from utilities.helper_functions import text_to_prompt
 
 def summarize(chapter:str='',model_name:str= "google/pegasus-xsum")->str:
         
