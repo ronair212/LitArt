@@ -16,11 +16,11 @@ from diffusers import StableDiffusionPipeline
 from LLama2.scripts.inference import generate_response
 from utilities.helper_functions import text_to_prompt
 
-def summarize(chapter:str='',model_name:str= "google/pegasus-xsum")->str:
+def summarize(chapter:str='',model_name:str= "google/pegasus-xsum", cache_dir: str = "/work/LitArt/cache")->str:
         
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir)
 
-    model_pegasus = AutoModelForSeq2SeqLM.from_pretrained(model_name).to(device)
+    model_pegasus = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=cache_dir).to(device)
 
     pipe = pipeline("summarization", model=model_pegasus ,tokenizer=tokenizer)
 
