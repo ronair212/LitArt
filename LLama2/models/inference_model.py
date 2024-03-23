@@ -18,8 +18,6 @@ from peft import get_peft_model
 from peft import prepare_model_for_kbit_training
 
 
-
-
 def get_inference_model(model_dir):
     
     '''

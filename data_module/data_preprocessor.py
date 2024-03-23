@@ -4,6 +4,7 @@ import gensim
 import nltk
 import re
 import contractions
+nltk.download('wordnet')
 
 
 class TextPreprocessing():

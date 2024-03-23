@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Text Preprocessing, Summarization, and Image Generation</title>
+</head>
+<body>
+    <h2>Enter Text to Preprocess, Summarize, and Generate an Image</h2>
+    <p>Note: Your text will be preprocessed to remove slang, punctuation, and perform other cleaning operations before summarization.</p>
+    <form method="post">
+        <textarea name="text" rows="10" cols="50"></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+    {% if summary_text %}
+        <h3>Summary</h3>
+        <p>{{ summary_text }}</p>
+    {% endif %}
+    {% if image_file %}
+        <h3>Generated Image</h3>
+        <img src="{{ url_for('static', filename=image_file) }}" alt="Generated Image">
+    {% endif %}
+</body>
+</html>
