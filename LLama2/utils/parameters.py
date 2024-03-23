@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.insert(1,'/home/nair.ro/LitArt/LLama2')
+sys.path.insert(1,'/home/patil.adwa/LitArt/LLama2')
 
 
 from datetime import date
@@ -15,10 +15,9 @@ cache_dir = "/work/LitArt/nair/cache/"
 log_path = "/work/LitArt/nair/outdir/"
 
 
-
 # Training Parameters
-batch_size = int(os.getenv('BATCH_SIZE'))
-epochs = int(os.getenv('EPOCHS'))
+batch_size = int(os.getenv('BATCH_SIZE',1))
+epochs = int(os.getenv('EPOCHS',1))
 gradient_accumulation_steps = 2
 learning_rate = 1e-4
 save_total_limit = 3

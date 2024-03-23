@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.insert(1,"/home/nair.ro/LitArt/LLama2")
+sys.path.insert(1,"/home/patil.adwa/LitArt/LLama2")
 from models.inference_model import get_inference_model
 from utils.logger import save_generated_summary
 
