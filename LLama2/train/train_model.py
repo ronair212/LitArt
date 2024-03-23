@@ -13,7 +13,7 @@ from configs.bnb_config import get_bnb_config
 from configs.lora_config import get_lora_config
 from utils.logger import get_logger , save_hyperparameters 
 from utils.parameters import (batch_size, epochs, gradient_accumulation_steps, learning_rate, 
-                                     save_total_limit, logging_steps, output_dir, max_steps, log_path)
+                                     save_total_limit, logging_steps, output_dir, max_steps, log_path , save_strategy)
 
 def train_model():
     base_model, tokenizer = get_base_model()
@@ -30,7 +30,7 @@ def train_model():
         logging_steps=logging_steps,
         output_dir=output_dir,
         max_steps=max_steps,
-        save_strategy='epoch',
+        save_strategy=save_strategy,
         optim="adamw_hf",  #"paged_adamw_32bit" #"paged_adamw_8bit"
         lr_scheduler_type='cosine',
         warmup_ratio=0.05,

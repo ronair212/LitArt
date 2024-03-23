@@ -16,7 +16,9 @@ def extract_clean_response(input_string):
         return clean_response
     else:
         # If the marker  is not found, return the specified message
-        return "No response from LLM"
+        response = "<Error in response from LLM>\n\n" + str(input_string    )
+        return response
+
 
 
 def generate_response(chapter : str,model_dir:str) -> str:

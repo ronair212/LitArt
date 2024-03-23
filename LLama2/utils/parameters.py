@@ -17,16 +17,16 @@ log_path = "/work/LitArt/nair/outdir/"
 
 
 # Training Parameters
-batch_size = 2
-epochs = 1
+batch_size = int(os.getenv('BATCH_SIZE'))
+epochs = int(os.getenv('EPOCHS'))
 gradient_accumulation_steps = 2
-learning_rate = 2e-4
+learning_rate = 1e-4
 save_total_limit = 3
 logging_steps = 10
 max_steps = 200
 today = date.today()
 output_dir = log_path + base_model_name.replace("/", "-") + "-" + str(today) + "-" + time.strftime("%H:%M:%S", time.localtime())
-
+save_strategy = 'epoch'
 
 r = int(os.getenv('R', 16))
 lora_alpha = int(os.getenv('LORA_ALPHA', 32))
@@ -35,6 +35,5 @@ lora_dropout = float(os.getenv('LORA_DROPOUT', 0.05))
 
 quant_4bit = str(os.getenv('QUANT_4BIT'))
 quant_8bit = str(os.getenv('QUANT_8BIT'))
-
 
 attention_blocks_lora = str(os.getenv('ATTN_BLOCK_LORA'))
