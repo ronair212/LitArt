@@ -14,7 +14,7 @@ accelerate launch train_generator.py \
   --gradient_accumulation_steps=3 \
   --gradient_checkpointing \
   --mixed_precision="fp16" \
-  --max_train_steps=500 \
+  --max_train_steps=1500\
   --learning_rate=2e-05 \
   --max_grad_norm=1 \
   --lr_scheduler="constant" --lr_warmup_steps=0 \

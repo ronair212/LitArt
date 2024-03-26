@@ -3,12 +3,12 @@ import sys
 import os
 # append a new directory to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-sys.path.append('/home/verma.shi/LLM/LitArt/data_module')
+sys.path.append('/home/patil.adwa/LLM/LitArt/')
+sys.path.insert(1, os.path.expanduser('~') + '/LitArt/')
 
 import glob
 import os
 import shutil
-from data_module.dataset import TextSummaryDataset
 from datasets import  load_dataset
 
 import torch
@@ -17,13 +17,15 @@ from torchvision import transforms
 
 import pandas as pd
 import lightning as L
-from data_preprocessor import TextPreprocessing
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.state import AcceleratorState
 from accelerate.utils import ProjectConfiguration, set_seed
+
+from data_module.dataset import TextSummaryDataset
+from data_module.data_preprocessor import TextPreprocessing
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
