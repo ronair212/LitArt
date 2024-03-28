@@ -176,26 +176,28 @@ class ImageDataModule(L.LightningModule):
                     destination_path:str="../data/genre_fantasy/"):
 
         img_paths = self.og_dataset.imageLocation.tolist()
+        if os.path.exists(destination_path) and os.path.isdir(destination_path):
+            pass
+        else: 
+            os.makedirs(destination_path, exist_ok=True)
 
-        os.makedirs(destination_path, exist_ok=True)
+            for img_path in img_paths[4:]:
+                try:
+                    filename = os.path.basename(img_path)
+                    extension = os.path.splitext(filename)[1]
 
-        for img_path in img_paths[4:]:
-            try:
-                filename = os.path.basename(img_path)
-                extension = os.path.splitext(filename)[1]
+                    new_filename = f"{filename[:-len(extension)]}{extension}"
 
-                new_filename = f"{filename[:-len(extension)]}{extension}"
+                    new_destination_path = os.path.join(destination_path, new_filename)
 
-                new_destination_path = os.path.join(destination_path, new_filename)
-
-                shutil.copy2(img_path, new_destination_path)
-            except Exception as e:
-                print(f"Error transferring {img_path}: {e}")
-        
-        metadata = pd.DataFrame({'file_name':self.og_dataset.imageLocation.tolist(),'text':self.og_dataset.Synopsis.tolist()})
-        metadata.dropna(subset=['file_name'],inplace=True)
-        metadata.file_name = metadata.file_name.apply(lambda x: os.path.basename(x))
-        metadata.to_csv(destination_path+"metadata.csv",index=False)
+                    shutil.copy2(img_path, new_destination_path)
+                except Exception as e:
+                    print(f"Error transferring {img_path}: {e}")
+            
+            metadata = pd.DataFrame({'file_name':self.og_dataset.imageLocation.tolist(),'text':self.og_dataset.Synopsis.tolist()})
+            metadata.dropna(subset=['file_name'],inplace=True)
+            metadata.file_name = metadata.file_name.apply(lambda x: os.path.basename(x))
+            metadata.to_csv(destination_path+"metadata.csv",index=False)
         print("Dataset is ready to Load!!")
     
     def preprocess_train(self,examples):

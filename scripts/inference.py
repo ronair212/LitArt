@@ -28,18 +28,19 @@ def summarize(chapter:str='',model_name:str= "google/pegasus-xsum")->str:
     
     return pipe_out
 
-def generate(prompt:str='',model_name:str= "CompVis/stable-diffusion-v1-4",file_name:str='test')->None:
+def generate(lora:str,prompt:str='',model_name:str= "CompVis/stable-diffusion-v1-4",file_name:str='test')->None:
 
     pipe = StableDiffusionPipeline.from_pretrained(model_name, torch_dtype=torch.float16)
     pipe = pipe.to(device)
     print("--------------")
     print("Device:",device)
     print("-------------")
+    pipe.load_lora_weights(lora,weight_name="pytorch_lora_weights.safetensors")
     image = pipe(prompt,
                 negative_prompt="B&w,cropping,open book,no edges, cropped book, small book, other objects,square,edges clipping",
-                guidance_scale=6.5,num_inference_steps=32).images[0]  
+                guidance_scale=6.5,num_inference_steps=100).images[0]  
 
-    image.save(f"../sample_output/{file_name}_{time.time()}.png")
+    image.save(f"../sample_output/{file_name}_{hashing}.png")
 
 
 if __name__ == '__main__':
@@ -56,6 +57,9 @@ if __name__ == '__main__':
     parser.add_argument('-g','--generator',
                         default="CompVis/stable-diffusion-v1-4",
                         type=str,help='name of model used for generation')
+    parser.add_argument('-l', "--lora",
+                        default="",
+                        type=str,help='lora weights for trained model')
     parser.add_argument('-f','--filename',
                         default="default",
                         type=str,help='name with which image is saved')
@@ -71,6 +75,8 @@ if __name__ == '__main__':
     s_model = args.summarizer
     g_model = args.generator
     file_name = args.filename
+    l_weights = args.lora
+    hashing = time.time()
 
     print("Generating summary....")
     if s_model=='Llama':
@@ -81,13 +87,17 @@ if __name__ == '__main__':
     else:
         summary_text = chapter_text
     print(f"Summary: {summary_text}")
+    
+    with open(os.path.expanduser('~')+"/LitArt/utilities/summaries/"+f"{file_name}_{hashing}.txt", 'w') as file:
+        file.write(summary_text)
 
     prompt = text_to_prompt(text=summary_text)
     print(f"Prompt: {prompt}")
     print("Generating Image....")
     generate(prompt=prompt,
              model_name=g_model,
-             file_name=file_name)
+             file_name=file_name,
+             lora=l_weights)
     
     print("Image generated!")
     

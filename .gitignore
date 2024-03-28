@@ -7,3 +7,4 @@ data/
 */trained_models/
 *.jpg
 */__pycache__/*
+*/summaries/*

@@ -17,6 +17,7 @@ import torch
 import torch.nn.functional as F
 import torch.utils.checkpoint
 import transformers
+
 from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.state import AcceleratorState
@@ -32,23 +33,20 @@ from transformers.utils import ContextManagers
 import diffusers
 from diffusers import AutoencoderKL, DDPMScheduler, StableDiffusionPipeline, UNet2DConditionModel
 from diffusers.optimization import get_scheduler
-from diffusers.training_utils import EMAModel, compute_snr
-from diffusers.utils import check_min_version, deprecate, is_wandb_available, make_image_grid
+from diffusers.training_utils import EMAModel, compute_snr, cast_training_params
+from diffusers.utils import check_min_version, deprecate, is_wandb_available, make_image_grid,convert_state_dict_to_diffusers
 from diffusers.utils.hub_utils import load_or_create_model_card, populate_model_card
 from diffusers.utils.import_utils import is_xformers_available
 from diffusers.utils.torch_utils import is_compiled_module
+
+from peft import LoraConfig
+from peft.utils import get_peft_model_state_dict
 
 from utilities.helper_functions import log_validation
 from data_module.datamodule import ImageDataModule
 
 
 logger = get_logger(__name__, log_level="INFO")
-
-# Function for unwrapping if model was compiled with `torch.compile`.
-def unwrap_model(model):
-    model = accelerator.unwrap_model(model)
-    model = model._orig_mod if is_compiled_module(model) else model
-    return model
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Simple example of a training script.")
@@ -314,7 +312,7 @@ def parse_args():
     parser.add_argument(
         "--enable_xformers_memory_efficient_attention", action="store_true", help="Whether or not to use xformers."
     )
-    parser.add_argument("--noise_offset", type=float, default=0, help="The scale of noise offset.")
+
     parser.add_argument(
         "--validation_epochs",
         type=int,
@@ -349,6 +347,11 @@ def parse_args():
         default=False,
         help=("Indicate if you want to use Lora")
     )
+
+    parser.add_argument(
+        "--validation_prompt", type=str, default=None, help="A prompt that is sampled during training for inference."
+    )
+
     args = parser.parse_args()
     env_local_rank = int(os.environ.get("LOCAL_RANK", -1))
     if env_local_rank != -1 and env_local_rank != args.local_rank:
@@ -409,6 +412,20 @@ def main():
     tokenizer = CLIPTokenizer.from_pretrained(
         args.pretrained_model_name_or_path, subfolder="tokenizer", revision=args.revision
     )
+
+    # For mixed precision training we cast all non-trainable weights (vae, non-lora text_encoder and non-lora unet) to half-precision
+    weight_dtype = torch.float32
+    if accelerator.mixed_precision == "fp16":
+        weight_dtype = torch.float16
+    elif accelerator.mixed_precision == "bf16":
+        weight_dtype = torch.bfloat16
+    
+    # Function for unwrapping if model was compiled with `torch.compile`.
+    def unwrap_model(model):
+        model = accelerator.unwrap_model(model)
+        model = model._orig_mod if is_compiled_module(model) else model
+        return model
+
     if not args.lora:
         def deepspeed_zero_init_disabled_context_manager():
             """
@@ -498,14 +515,6 @@ def main():
         unet.requires_grad_(False)
         vae.requires_grad_(False)
         text_encoder.requires_grad_(False)
-
-        # # For mixed precision training we cast all non-trainable weights (vae, non-lora text_encoder and non-lora unet) to half-precision
-        # # as these weights are only used for inference, keeping weights in full precision is not required.
-        # weight_dtype = torch.float32
-        # if accelerator.mixed_precision == "fp16":
-        #     weight_dtype = torch.float16
-        # elif accelerator.mixed_precision == "bf16":
-        #     weight_dtype = torch.bfloat16
 
         # Freeze the unet parameters before adding adapters
         for param in unet.parameters():
@@ -622,14 +631,6 @@ def main():
     if args.use_ema and not args.lora:
         ema_unet.to(accelerator.device)
 
-    # For mixed precision training we cast all non-trainable weights (vae, non-lora text_encoder and non-lora unet) to half-precision
-    weight_dtype = torch.float32
-    if accelerator.mixed_precision == "fp16":
-        weight_dtype = torch.float16
-        args.mixed_precision = accelerator.mixed_precision
-    elif accelerator.mixed_precision == "bf16":
-        weight_dtype = torch.bfloat16
-        args.mixed_precision = accelerator.mixed_precision
 
     if not args.lora:
         # Move text_encode and vae to gpu and cast to weight_dtype
