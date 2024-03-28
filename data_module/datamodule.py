@@ -3,12 +3,12 @@ import sys
 import os
 # append a new directory to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-sys.path.append('/home/verma.shi/LLM/LitArt/data_module')
+sys.path.append('/home/patil.adwa/LLM/LitArt/')
+sys.path.insert(1, os.path.expanduser('~') + '/LitArt/')
 
 import glob
 import os
 import shutil
-from data_module.dataset import TextSummaryDataset
 from datasets import  load_dataset
 
 import torch
@@ -17,13 +17,15 @@ from torchvision import transforms
 
 import pandas as pd
 import lightning as L
-from data_preprocessor import TextPreprocessing
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 from accelerate import Accelerator
 from accelerate.logging import get_logger
 from accelerate.state import AcceleratorState
 from accelerate.utils import ProjectConfiguration, set_seed
+
+from data_module.dataset import TextSummaryDataset
+from data_module.data_preprocessor import TextPreprocessing
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -174,26 +176,28 @@ class ImageDataModule(L.LightningModule):
                     destination_path:str="../data/genre_fantasy/"):
 
         img_paths = self.og_dataset.imageLocation.tolist()
+        if os.path.exists(destination_path) and os.path.isdir(destination_path):
+            pass
+        else: 
+            os.makedirs(destination_path, exist_ok=True)
 
-        os.makedirs(destination_path, exist_ok=True)
+            for img_path in img_paths[4:]:
+                try:
+                    filename = os.path.basename(img_path)
+                    extension = os.path.splitext(filename)[1]
 
-        for img_path in img_paths[4:]:
-            try:
-                filename = os.path.basename(img_path)
-                extension = os.path.splitext(filename)[1]
+                    new_filename = f"{filename[:-len(extension)]}{extension}"
 
-                new_filename = f"{filename[:-len(extension)]}{extension}"
+                    new_destination_path = os.path.join(destination_path, new_filename)
 
-                new_destination_path = os.path.join(destination_path, new_filename)
-
-                shutil.copy2(img_path, new_destination_path)
-            except Exception as e:
-                print(f"Error transferring {img_path}: {e}")
-        
-        metadata = pd.DataFrame({'file_name':self.og_dataset.imageLocation.tolist(),'text':self.og_dataset.Synopsis.tolist()})
-        metadata.dropna(subset=['file_name'],inplace=True)
-        metadata.file_name = metadata.file_name.apply(lambda x: os.path.basename(x))
-        metadata.to_csv(destination_path+"metadata.csv",index=False)
+                    shutil.copy2(img_path, new_destination_path)
+                except Exception as e:
+                    print(f"Error transferring {img_path}: {e}")
+            
+            metadata = pd.DataFrame({'file_name':self.og_dataset.imageLocation.tolist(),'text':self.og_dataset.Synopsis.tolist()})
+            metadata.dropna(subset=['file_name'],inplace=True)
+            metadata.file_name = metadata.file_name.apply(lambda x: os.path.basename(x))
+            metadata.to_csv(destination_path+"metadata.csv",index=False)
         print("Dataset is ready to Load!!")
     
     def preprocess_train(self,examples):
