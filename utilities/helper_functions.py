@@ -7,15 +7,11 @@ from diffusers import StableDiffusionPipeline
 
 logger = get_logger(__name__, log_level="INFO")
 
-def text_to_prompt(text:str)->str:
+def text_to_prompt(text:str,model:str)->str:
     text = re.sub('[^\w\s]',' ',text)
-    # prompt = f'''The book is about {text}.The cover of the book is attractive and shows stunning details,
-    #            photorealistic,rectangular aspect ratio,Cinematic and volumetric ligh,margins on both side'''
-
-    prompt = f'''The book is about: {text}. Its cover captivates with intricate details, boasting photorealism and a 
+    genre = model.split('/')[-2].split('_')[0]
+    prompt = f'''The book is about: {text} its genre is {genre}. Its cover captivates with intricate details, boasting photorealism and a 
     rectangular aspect ratio. Enhanced with cinematic and volumetric lighting, it features balanced margins on both sides'''
-
-    #prompt = f'''Centered on {text}, the book's cover boasts vivid imagery, a rectangular layout, and evenly spaced margins, contributing to its overall visual appeal.'''
 
     return prompt
 

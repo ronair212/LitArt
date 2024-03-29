@@ -41,6 +41,7 @@ def generate(lora:str,prompt:str='',model_name:str= "CompVis/stable-diffusion-v1
                 guidance_scale=6.5,num_inference_steps=100).images[0]  
 
     image.save(f"../sample_output/{file_name}_{hashing}.png")
+    return image
 
 
 if __name__ == '__main__':
@@ -104,8 +105,6 @@ if __name__ == '__main__':
                                         temperature = temperature,
                                         top_p = top_p,
                                         )
-    # summary_text = summarize(chapter=chapter_text,
-    #                          model_name=s_model)
     else:
         summary_text = chapter_text
     print(f"Summary: {summary_text}")
@@ -113,10 +112,10 @@ if __name__ == '__main__':
     with open(os.path.expanduser('~')+"/LitArt/utilities/summaries/"+f"{file_name}_{hashing}.txt", 'w') as file:
         file.write(summary_text)
 
-    prompt = text_to_prompt(text=summary_text)
+    prompt = text_to_prompt(text=summary_text,model=l_weights)
     print(f"Prompt: {prompt}")
     print("Generating Image....")
-    generate(prompt=prompt,
+    book_cover = generate(prompt=prompt,
              model_name=g_model,
              file_name=file_name,
              lora=l_weights)
