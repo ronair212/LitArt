@@ -36,3 +36,16 @@ quant_4bit = str(os.getenv('QUANT_4BIT'))
 quant_8bit = str(os.getenv('QUANT_8BIT'))
 
 attention_blocks_lora = str(os.getenv('ATTN_BLOCK_LORA'))
+'''
+# Inference parameters
+max_new_tokens=500
+do_sample=False
+temperature = 1.0
+top_p = 0.8
+
+
+max_new_tokens = int(os.getenv('MAX_NEW_TOKEN',500))
+do_sample = int(os.getenv('DO_SAMPLE',1))
+temperature = FLOAT(os.getenv('TEMPERATURE',1.0))
+top_p = float(os.getenv('TOP_P',0.8))
+'''
