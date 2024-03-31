@@ -17,7 +17,8 @@ from LLama2.scripts.inference import generate_response
 from utilities.helper_functions import text_to_prompt 
 
 def summarize(chapter:str='',model_name:str= "google/pegasus-xsum", cache_dir: str = "/work/LitArt/cache")->str:
-        
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=cache_dir)
 
     model_pegasus = AutoModelForSeq2SeqLM.from_pretrained(model_name, cache_dir=cache_dir).to(device)
@@ -29,7 +30,9 @@ def summarize(chapter:str='',model_name:str= "google/pegasus-xsum", cache_dir: s
     return pipe_out
 
 def generate(lora:str,prompt:str='',model_name:str= "CompVis/stable-diffusion-v1-4",file_name:str='test')->None:
-
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    hashing = time.time()
+    
     pipe = StableDiffusionPipeline.from_pretrained(model_name, torch_dtype=torch.float16)
     pipe = pipe.to(device)
     print("--------------")
@@ -38,7 +41,7 @@ def generate(lora:str,prompt:str='',model_name:str= "CompVis/stable-diffusion-v1
     pipe.load_lora_weights(lora,weight_name="pytorch_lora_weights.safetensors")
     image = pipe(prompt,
                 negative_prompt="B&w,cropping,open book,no edges, cropped book, small book, other objects,square,edges clipping",
-                guidance_scale=6.5,num_inference_steps=100).images[0]  
+                guidance_scale=6.5,num_inference_steps=32).images[0]  
 
     image.save(f"../sample_output/{file_name}_{hashing}.png")
     return image
@@ -93,8 +96,6 @@ if __name__ == '__main__':
     temperature = args.temperature
     top_p = args.top_p
     
-    
-    hashing = time.time()
 
     print("Generating summary....")
     if s_model=='Llama':

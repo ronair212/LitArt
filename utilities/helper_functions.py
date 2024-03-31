@@ -9,7 +9,10 @@ logger = get_logger(__name__, log_level="INFO")
 
 def text_to_prompt(text:str,model:str)->str:
     text = re.sub('[^\w\s]',' ',text)
-    genre = model.split('/')[-2].split('_')[0]
+    if '/' in model:
+        genre = model.split('/')[-2].split('_')[0]
+    else:
+        genre = model
     prompt = f'''The book is about: {text} its genre is {genre}. Its cover captivates with intricate details, boasting photorealism and a 
     rectangular aspect ratio. Enhanced with cinematic and volumetric lighting, it features balanced margins on both sides'''
 
