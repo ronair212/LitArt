@@ -1,3 +1,4 @@
+import os
 import sys
 import json
 import glob
@@ -9,11 +10,10 @@ from transformers import pipeline
 from transformers import AutoModelForSeq2SeqLM
 from transformers import AutoTokenizer
 tqdm.tqdm.pandas()
-from summarizer import TextSummaryModel
 cache_dir="/work/LitArt/cache"
 sys.path.insert(1, os.path.expanduser('~') + '/LitArt/')
 
-from Pegasus.models import load_model_details_pegasus
+from Pegasus.models.pegasus_model import load_model_details_pegasus
 
 def summarize_pegasus(text):
 
@@ -26,7 +26,7 @@ def summarize_pegasus(text):
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    model = model.to(device)
+    summary_model = summary_model.to(device)
     text = "Summarize the following : \n" + text
     inputs = tokenizer(text, 
                        max_length=chapter_length,
@@ -34,7 +34,7 @@ def summarize_pegasus(text):
                        padding="max_length",
                        add_special_tokens=True, 
                        return_tensors="pt").to(device)
-    summarized_ids = model.generate(
+    summarized_ids = summary_model.generate(
             input_ids=inputs["input_ids"],
             attention_mask=inputs["attention_mask"], 
             max_length= summary_length,

@@ -1,4 +1,4 @@
-
+import os
 import sys
 import json
 import glob
@@ -10,11 +10,10 @@ from transformers import pipeline
 from transformers import AutoModelForSeq2SeqLM
 from transformers import AutoTokenizer
 tqdm.tqdm.pandas()
-from summarizer import TextSummaryModel
 cache_dir="/work/LitArt/cache"
 sys.path.insert(1, os.path.expanduser('~') + '/LitArt/')
 
-def load_model_details_bart(path="/work/LitArt/verma/final_models/facebook-bart-large-2024-03-20-16:14:41"):
+def load_model_details_bart(path="/work/LitArt/verma/final_models/facebook-bart-large-2024-03-20-16:14:41/"):
 
     with open(path+"run_config.json") as json_file:
         run_details = json.load(json_file)
