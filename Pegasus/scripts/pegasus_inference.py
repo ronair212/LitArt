@@ -13,7 +13,7 @@ from summarizer import TextSummaryModel
 cache_dir="/work/LitArt/cache"
 sys.path.insert(1, os.path.expanduser('~') + '/LitArt/')
 
-from T5.models import load_model_details_pegasus
+from Pegasus.models import load_model_details_pegasus
 
 def summarize_pegasus(text):
 
