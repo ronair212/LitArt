@@ -3,6 +3,8 @@ import os
 sys.path.insert(1,"/work/LitArt/patel/LitArt/LLama2")
 from models.inference_model import get_inference_model
 from utils.logger import save_generated_summary
+from utils.helper import string_to_bool
+#from utils.parameters import max_new_tokens, do_sample , temperature, top_p
 
 def extract_clean_response(input_string):
     # Split the input string by the marker "### Assistant:"
@@ -16,16 +18,21 @@ def extract_clean_response(input_string):
         return clean_response
     else:
         # If the marker  is not found, return the specified message
-        response = "<Error in response from LLM>\n\n" + str(input_string    )
+        response = "<Error in response from LLM>\n\n" + str(input_string)
         return response
 
 
 
-def generate_response(chapter : str,model_dir:str) -> str:
+def generate_response(chapter : str,model_dir:str ,max_new_tokens:int ,do_sample:str ,temperature:float ,top_p :float ) -> str:
+    do_sample = string_to_bool(do_sample)
     model, tokenizer = get_inference_model(model_dir)
     prompt =  f"""### USER: Summarize the following text : ' {chapter}' ### Assistant:  """.strip()
     inputs = tokenizer(prompt, return_tensors="pt").to(0)
-    outputs = model.generate(inputs.input_ids, max_new_tokens=500, do_sample=False)
+    outputs = model.generate(inputs.input_ids, 
+                             max_new_tokens=max_new_tokens, 
+                             do_sample=do_sample,
+                             temperature = temperature,
+                            top_p = top_p,)
     output = tokenizer.decode(outputs[0], skip_special_tokens=False)
     return extract_clean_response(output)
 

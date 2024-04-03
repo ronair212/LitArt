@@ -7,15 +7,14 @@ from diffusers import StableDiffusionPipeline
 
 logger = get_logger(__name__, log_level="INFO")
 
-def text_to_prompt(text:str)->str:
+def text_to_prompt(text:str,model:str)->str:
     text = re.sub('[^\w\s]',' ',text)
-    # prompt = f'''The book is about {text}.The cover of the book is attractive and shows stunning details,
-    #            photorealistic,rectangular aspect ratio,Cinematic and volumetric ligh,margins on both side'''
-
-    prompt = f'''The book is about: {text}. Its cover captivates with intricate details, boasting photorealism and a 
+    if '/' in model:
+        genre = model.split('/')[-2].split('_')[0]
+    else:
+        genre = model
+    prompt = f'''The book is about: {text} its genre is {genre}. Its cover captivates with intricate details, boasting photorealism and a 
     rectangular aspect ratio. Enhanced with cinematic and volumetric lighting, it features balanced margins on both sides'''
-
-    #prompt = f'''Centered on {text}, the book's cover boasts vivid imagery, a rectangular layout, and evenly spaced margins, contributing to its overall visual appeal.'''
 
     return prompt
 
@@ -71,3 +70,22 @@ def log_validation(vae, text_encoder, tokenizer, unet, args, accelerator, weight
     torch.cuda.empty_cache()
 
     return images
+
+
+#
+def string_to_bool(input_string):
+    normalized_string = input_string.strip().lower()
+    
+    true_values = ["true", "True", "TRUE" , "T" "yes", "1", "t", "y"]
+    
+    false_values = ["false", "False" , "FALSE", "F", "0", "f", "n"]
+    
+    if normalized_string in true_values:
+        return True
+    elif normalized_string in false_values:
+        return False
+    else:
+        raise ValueError("Input string does not represent a boolean value")
+
+
+
