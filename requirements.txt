@@ -1,5 +1,5 @@
 accelerate==0.26.1
-anaconda-navigator==2.1.4
+# anaconda-navigator==2.1.4
 anaconda-project==0.10.2
 astropy==5.0.4
 autopep8==1.6.0
