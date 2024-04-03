@@ -29,7 +29,7 @@ def summarize(chapter:str='',model_name:str= "google/pegasus-xsum", cache_dir: s
     
     return pipe_out
 
-def generate(lora:str,prompt:str='',model_name:str= "CompVis/stable-diffusion-v1-4",file_name:str='test')->None:
+def generate(lora:str,prompt:str='',model_name:str= "CompVis/stable-diffusion-v1-4",file_name:str='test',inference_steps:int=32)->None:
     device = "cuda" if torch.cuda.is_available() else "cpu"
     hashing = time.time()
     
@@ -41,7 +41,7 @@ def generate(lora:str,prompt:str='',model_name:str= "CompVis/stable-diffusion-v1
     pipe.load_lora_weights(lora,weight_name="pytorch_lora_weights.safetensors")
     image = pipe(prompt,
                 negative_prompt="B&w,cropping,open book,no edges, cropped book, small book, other objects,square,edges clipping",
-                guidance_scale=6.5,num_inference_steps=32).images[0]  
+                guidance_scale=6.5,num_inference_steps=inference_steps).images[0]  
 
     image.save(f"../sample_output/{file_name}_{hashing}.png")
     return image
@@ -64,6 +64,11 @@ if __name__ == '__main__':
     parser.add_argument('-l', "--lora",
                         default="",
                         type=str,help='lora weights for trained model')
+    
+    parser.add_argument('-i',"--inference_steps",
+                        default=32,
+                        type=int,help='Image model inference steps')
+
     parser.add_argument('-f','--filename',
                         default="default",
                         type=str,help='name with which image is saved')
@@ -80,6 +85,8 @@ if __name__ == '__main__':
    
     args = parser.parse_args()
 
+    hashing = time.time()
+
     chapter_path = args.chapter
 
     with open(chapter_path,mode='r') as f:
@@ -90,6 +97,7 @@ if __name__ == '__main__':
     g_model = args.generator
     file_name = args.filename
     l_weights = args.lora
+    i_steps = args.inference_steps
     
     max_new_tokens = args.max_new_tokens
     do_sample = args.do_sample
@@ -119,7 +127,8 @@ if __name__ == '__main__':
     book_cover = generate(prompt=prompt,
              model_name=g_model,
              file_name=file_name,
-             lora=l_weights)
+             lora=l_weights,
+             inference_steps=i_steps)
     
     print("Image generated!")
     
