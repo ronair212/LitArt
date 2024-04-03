@@ -58,7 +58,9 @@ def generate_image(prompt:str,book_title:str,adapter:str,num_covers:int=1):
     for i, image in enumerate(covers):
         with cols[i]:
             st.image(image, caption=prompt)
-    
+
+def clear_cache():
+    st.cache_data.clear()
 
 if app_mode == "Upload Chapters":
     st.subheader("Upload Your Chapter Here")
@@ -90,7 +92,7 @@ if app_mode == "Upload Chapters":
             pdf_reader = PyPDF2.PdfReader(io.BytesIO(content))
             chapter = ''
             
-            for page_num in range(pdf_reader.numPages):
+            for page_num in range(len(pdf_reader)):
                 page = pdf_reader.getPage(page_num)
                 chapter += page.extractText()
 
@@ -158,4 +160,4 @@ if processing_done :
 if image_generated:
     clear_cache = st.button("clear cache")
     if clear_cache:
-        st.cache_data.clear()
+        clear_cache()
