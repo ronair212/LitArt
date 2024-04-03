@@ -1,6 +1,7 @@
 import sys
 import os
 sys.path.insert(1, os.path.expanduser('~') + '/LitArt/')
+sys.path.insert(2, '/work/LitArt/patel/LitArt')
 
 import streamlit as st
 import time
@@ -22,6 +23,7 @@ from BART.scripts.bart_inference import summarize_bart
 st.set_page_config(page_title="Book covers", page_icon=":notebook_with_decorative_cover:")
 processing_done = False
 image_generated = False
+summary_text = None
 summarizers = {'T5': summarize_t5
               ,'BART':summarize_bart
               ,'Pegasus':summarize_pegasus}
