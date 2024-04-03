@@ -13,12 +13,18 @@ import torch
 
 from scripts.inference import summarize,generate
 from LLama2.scripts.inference import generate_response
-from utilities.helper_functions import text_to_prompt 
+from utilities.helper_functions import text_to_prompt
+from T5.scripts.t5_inference import summarize_t5
+from Pegasus.scripts.pegasus_inference import summarize_pegasus
+from BART.scripts.bart_inference import summarize_bart
 
 
 st.set_page_config(page_title="Book covers", page_icon=":notebook_with_decorative_cover:")
 processing_done = False
 image_generated = False
+summarizers = {'T5': summarize_t5
+              ,'BART':summarize_bart
+              ,'Pegasus':summarize_pegasus}
 
 st.sidebar.title("Navigation")    
 app_mode = st.sidebar.selectbox("Choose the app mode", ["Upload Chapters", "Generate Book Covers"])
@@ -29,14 +35,18 @@ def load_lottie_file(path:str):
     return data
 
 @st.cache_data(show_spinner=False)
-def generate_text(temperature,chapter:str,sample:bool):
-    summary_text = generate_response(chapter=chapter,
+def generate_text(chapter:str,sample:bool=False,temperature:int=1,summarizer:str="LLama"):
+    if summarizer=="LLama":
+        summary_text = generate_response(chapter=chapter,
                             model_dir="/work/LitArt/nair/outdir/meta-llama-Llama-2-7b-hf-2024-03-21-14:17:13",
                             max_new_tokens = 500,
                             do_sample = sample,
                             temperature = float(temperature),
                             top_p = 0.8,
                             )
+    else:
+        summary_text = summarizers[summarizer](chapter)
+
     st.success("Summary created successfully!")
     torch.cuda.empty_cache()
     return summary_text
@@ -69,6 +79,8 @@ if app_mode == "Upload Chapters":
         temprature = st.select_slider('Choose temprature',[0.5,0.6,0.7,0.8,0.9,1])
         sample = st.selectbox('Sample',["True","False"])
 
+
+
     file_type = st.selectbox("Select File Type", ("pdf", "txt", "plain text"))
 
     if file_type == "txt":
@@ -81,7 +93,6 @@ if app_mode == "Upload Chapters":
                 summary_text = generate_text(temperature=temprature,
                                             chapter=chapter,
                                             sample=sample)
-            st.text(f"{summary_text}")
             processing_done = True 
 
     elif file_type == 'pdf':
@@ -100,7 +111,6 @@ if app_mode == "Upload Chapters":
                 summary_text = generate_text(temperature=temprature,
                                             chapter=chapter,
                                             sample=sample)
-            st.text(f"{summary_text}")
             processing_done = True 
 
     else:
@@ -112,9 +122,11 @@ if app_mode == "Upload Chapters":
                                         chapter=text_input,
                                         sample=sample)
                 st.success("Summary created successfully!")
-                st.text(f"{summary_text}")
-                processing_done = True 
 
+                processing_done = True 
+if summary_text:
+    st.subheader("Generated Summary")
+    st.write(f"{summary_text}")
 
 if app_mode == "Generate Book Covers":
     st.subheader("Generate Book Covers")
