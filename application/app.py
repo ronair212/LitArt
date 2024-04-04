@@ -24,11 +24,14 @@ st.set_page_config(page_title="Book covers", page_icon=":notebook_with_decorativ
 processing_done = False
 image_generated = False
 summary_text = None
+temperature = 1.0
+sample = "False"
+
 summarizers = {'T5': summarize_t5
               ,'BART':summarize_bart
               ,'Pegasus':summarize_pegasus}
 
-st.sidebar.title("Navigation")    
+st.sidebar.title("Navigation")
 app_mode = st.sidebar.selectbox("Choose the app mode", ["Upload Chapters", "Generate Book Covers"])
 
 def load_lottie_file(path:str):
@@ -78,7 +81,7 @@ if app_mode == "Upload Chapters":
     st.subheader("Upload Your Chapter Here")
     summarizer = st.selectbox('Choose the model to be used for summarization',['LLama','BART','T5','Seq2Seq'])
     if summarizer == 'LLama':
-        temprature = st.select_slider('Choose temprature',[0.5,0.6,0.7,0.8,0.9,1])
+        temperature = st.select_slider('Choose temperature',[0.5,0.6,0.7,0.8,0.9,1])
         sample = st.selectbox('Sample',["True","False"])
 
 
@@ -92,7 +95,7 @@ if app_mode == "Upload Chapters":
             chapter = uploaded_file.getvalue().decode('utf-8')
             st.write(chapter)
             with st_lottie_spinner(lottie,height=200):
-                summary_text = generate_text(temperature=temprature,
+                summary_text = generate_text(temperature=temperature,
                                             chapter=chapter,
                                             sample=sample)
             processing_done = True 
