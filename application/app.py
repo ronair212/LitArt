@@ -86,18 +86,10 @@ if app_mode == "Upload Chapters":
     st.subheader("Upload Your Chapter Here")
     summarizer = st.selectbox('Choose the model to be used for summarization',['LLama','BART','T5','Pegasus'])
 
-    #Default values as T5,BART and Pegasus has hardcoded tempreature values
-    temperature = 1
-    sample = False
-
-
     if summarizer == 'LLama':
         temperature = st.select_slider('Choose temperature',[0.5,0.6,0.7,0.8,0.9,1])
         sample = st.selectbox('Sample',["True","False"])
 
-    else:
-        temperature = 1
-        sample = True
 
     file_type = st.selectbox("Select File Type", ("pdf", "txt", "plain text"))
 
@@ -135,7 +127,7 @@ if app_mode == "Upload Chapters":
 
     else:
         text_input = st.text_area("Write your text here")
-        if text_input is not None:
+        if text_input != '':
             lottie = load_lottie_file("../utilities/anime.json")
             with st_lottie_spinner(lottie,height=200):
                 summary_text = generate_text(temperature=temperature,
