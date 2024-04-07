@@ -57,13 +57,13 @@ def generate_text(chapter:str,sample:bool=False,temperature:int=1,summarizer:str
     return summary_text
 
 @st.cache_data(show_spinner=False)
-def generate_image(prompt:str,book_title:str,adapter:str,num_covers:int=1):
+def generate_image(prompt:str,book_title:str,adapter:str,version:str,num_covers:int=1):
     covers = []
     for i in range(num_covers):
         book_cover = generate(prompt=prompt,
             model_name="CompVis/stable-diffusion-v1-4",
             file_name=book_title+f"_{time.time()}",
-            lora=f"/work/LitArt/adwait/capstone/trained_adapters/{adapter}_1.1.0/")
+            lora=f"/work/LitArt/adwait/capstone/trained_adapters/{adapter}_{version}/")
         
         covers.append(book_cover)
 
@@ -113,7 +113,7 @@ if app_mode == "Upload Chapters":
                 chapter += page.extractText()
 
             with st_lottie_spinner(lottie,height=200):
-                summary_text = generate_text(temperature=temprature,
+                summary_text = generate_text(temperature=temperature,
                                             chapter=chapter,
                                             sample=sample)
             processing_done = True 
@@ -123,7 +123,7 @@ if app_mode == "Upload Chapters":
         if text_input is not None:
             lottie = load_lottie_file("../utilities/anime.json")
             with st_lottie_spinner(lottie,height=200):
-                summary_text = generate_text(temperature=temprature,
+                summary_text = generate_text(temperature=temperature,
                                         chapter=text_input,
                                         sample=sample)
                 st.success("Summary created successfully!")
@@ -136,8 +136,8 @@ if summary_text:
 if app_mode == "Generate Book Covers":
     st.subheader("Generate Book Covers")
     lottie = load_lottie_file("../utilities/Image_gen.json")
-
     adapter = st.selectbox("Select an adapter",['fiction','fantasy','suspense','speculative_fiction'])
+    version = st.selectbox("Select adapter version",['1.1.0','2.1.0','3.0.1'])
     title = st.text_input("Enter book title")
     num_covers = st.select_slider("Number of Book covers",[1,2,3])
     prompt = st.text_area("Enter your prompt here keep it under 30 words ")
@@ -150,6 +150,7 @@ if app_mode == "Generate Book Covers":
             generate_image(prompt=prompt,
                     book_title=title,
                     adapter=adapter,
+                    version=version,
                     num_covers=int(num_covers))
             
         torch.cuda.empty_cache()
@@ -158,6 +159,7 @@ if app_mode == "Generate Book Covers":
 
 if processing_done :
     adapter = st.selectbox("Select an adapter",['fiction','fantasy','suspense','speculative_fiction'])
+    version = st.selectbox("Select adapter version",['1.1.0','2.1.0','3.0.1'])
     title = st.text_input("Enter book title")
     num_covers = st.select_slider("Number of Book covers",[1,2,3])
     button_clicked = st.button("Generate Book Covers")
@@ -169,6 +171,7 @@ if processing_done :
             generate_image(prompt=prompt,
                     book_title=title,
                     adapter=adapter,
+                    version=version,
                     num_covers=int(num_covers))
         
         torch.cuda.empty_cache()
