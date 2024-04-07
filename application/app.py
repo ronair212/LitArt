@@ -19,6 +19,8 @@ from T5.scripts.t5_inference import summarize_t5
 from Pegasus.scripts.pegasus_inference import summarize_pegasus
 from BART.scripts.bart_inference import summarize_bart
 
+print("Loaded necessary libraries")
+
 
 st.set_page_config(page_title="Book covers", page_icon=":notebook_with_decorative_cover:")
 processing_done = False
@@ -41,6 +43,9 @@ def load_lottie_file(path:str):
 
 @st.cache_data(show_spinner=False)
 def generate_text(chapter:str,sample:bool=False,temperature:int=1,summarizer:str="LLama"):
+
+    print(f"Summarizing using : {summarizer}")
+    
     if summarizer=="LLama":
         summary_text = generate_response(chapter=chapter,
                             model_dir="/work/LitArt/nair/outdir/meta-llama-Llama-2-7b-hf-2024-03-21-14:17:13",
@@ -79,12 +84,20 @@ def clear_cache():
 
 if app_mode == "Upload Chapters":
     st.subheader("Upload Your Chapter Here")
-    summarizer = st.selectbox('Choose the model to be used for summarization',['LLama','BART','T5','Seq2Seq'])
+    summarizer = st.selectbox('Choose the model to be used for summarization',['LLama','BART','T5','Pegasus'])
+
+    #Default values as T5,BART and Pegasus has hardcoded tempreature values
+    temperature = 1
+    sample = False
+
+
     if summarizer == 'LLama':
         temperature = st.select_slider('Choose temperature',[0.5,0.6,0.7,0.8,0.9,1])
         sample = st.selectbox('Sample',["True","False"])
 
-
+    else:
+        temperature = 1
+        sample = True
 
     file_type = st.selectbox("Select File Type", ("pdf", "txt", "plain text"))
 
@@ -97,6 +110,7 @@ if app_mode == "Upload Chapters":
             with st_lottie_spinner(lottie,height=200):
                 summary_text = generate_text(temperature=temperature,
                                             chapter=chapter,
+                                            summarizer=summarizer,
                                             sample=sample)
             processing_done = True 
 
@@ -113,8 +127,9 @@ if app_mode == "Upload Chapters":
                 chapter += page.extractText()
 
             with st_lottie_spinner(lottie,height=200):
-                summary_text = generate_text(temperature=temprature,
+                summary_text = generate_text(temperature=temperature,
                                             chapter=chapter,
+                                            summarizer=summarizer,
                                             sample=sample)
             processing_done = True 
 
@@ -123,8 +138,9 @@ if app_mode == "Upload Chapters":
         if text_input is not None:
             lottie = load_lottie_file("../utilities/anime.json")
             with st_lottie_spinner(lottie,height=200):
-                summary_text = generate_text(temperature=temprature,
+                summary_text = generate_text(temperature=temperature,
                                         chapter=text_input,
+                                        summarizer=summarizer,
                                         sample=sample)
                 st.success("Summary created successfully!")
 
