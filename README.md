@@ -51,7 +51,7 @@ ssh -L 5000:<YOUR-PORT> <YOUR-CLOUD-LOGIN>
 This is to forward your port to https://localhost:5000
 
 ## Training Models
-We use shell scripts for running the training scripts
+If you want to train on your data, we have created scripts for the summarization and image generation model.
 
 Training Summarizer
 ```bash
