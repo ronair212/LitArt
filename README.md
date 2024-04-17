@@ -12,16 +12,13 @@ LitArt is a platform that combines literary analysis with interactive technology
 
 ## Motivation
 
-This project was inspired by the need to bridge the gap between traditional literary appreciation and the digital age. We aim to transform the solitary act of reading into a more engaging and communal activity, helping users to explore literature in new and exciting ways.
+This project was inspired by the need to bridge the gap between traditional literary appreciation and the digital age. We aim to transform the solitary act of reading into a more engaging and communal activity, helping users explore literature in new and exciting ways.
 
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
 - Python 3.8 or above
-- Node.js 12 or higher
-- pip (Python package installer)
-- npm (Node package manager)
-- A modern web browser
+- GPU (A100, V100-SXM2)
 
 ## Installation
 
@@ -29,4 +26,6 @@ To set up LitArt for development, follow these steps:
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Ayush-Patel-10/LitArt.git
+   git clone https://github.com/ronair212/LitArt
+
+2. 
