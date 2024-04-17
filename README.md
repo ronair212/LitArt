@@ -48,7 +48,7 @@ To forward your port to another machine.
 ssh -L 5000:<YOUR-PORT> <YOUR-CLOUD-LOGIN>
 ```
 
-This is to forward your port to https://localhost:5000.com
+This is to forward your port to https://localhost:5000
 
 
 ## Libraries and Tools Used
