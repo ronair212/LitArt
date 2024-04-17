@@ -49,3 +49,10 @@ ssh -L 5000:<YOUR-PORT> <YOUR-CLOUD-LOGIN>
 ```
 
 This is to forward your port to https://localhost:5000.com
+
+
+## Libraries and Tools Used
+
+- Streamlit - Web framework
+- Transformer, diffuser, PEFT - Model fine tuning and training
+- Pytorch Lighting - Framework
