@@ -28,7 +28,7 @@ To set up LitArt for development, follow these steps:
    ```bash
    git clone https://github.com/ronair212/LitArt
 
-2. **Install all the dependencies in your environment ([Link](enterlink) to setup environment)**
+2. **Install all the dependencies in your environment ([Link](https://github.com/ronair212/LitArt/blob/main/INSTALL.md) to setup environment)**
    ```bash
    pip install -r requirements.txt
 
