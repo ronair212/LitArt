@@ -57,6 +57,22 @@ Training Summarizer
 ```bash
 sh script_ts.sh
 ```
+
+The training script for encoder-decoder models has the following training arguments for the script
+```bash
+--model "facebook/bart-large" \
+--tokenizer "facebook/bart-large" \
+--trainpath "/work/LitArt/data/chunked_dataset/train_dataset_with_summaries.csv" \
+--testpath "/work/LitArt/data/chunked_dataset/test_dataset_with_summaries.csv" \
+--valpath "/work/LitArt/data/chunked_dataset/validation_dataset_with_summaries.csv" \
+--batchsize 16 \
+--chapterlength 1024 \
+--summarylength 128 \
+--num_epochs 10 \
+--log_path "/work/LitArt/verma/" \
+--cache_dir  "/work/LitArt/cache"
+```
+
 Training Generator
 ```bash
 sh script_sd.sh
