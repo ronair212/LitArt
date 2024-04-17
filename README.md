@@ -58,7 +58,7 @@ Training Summarizer
 sh script_ts.sh
 ```
 
-The training script for encoder-decoder models has the following training arguments for the script
+The training script for encoder-decoder models has the following training arguments 
 ```bash
 --model "facebook/bart-large" \
 --tokenizer "facebook/bart-large" \
