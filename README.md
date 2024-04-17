@@ -28,4 +28,24 @@ To set up LitArt for development, follow these steps:
    ```bash
    git clone https://github.com/ronair212/LitArt
 
-2. 
+2. **Install all the dependencies in your environment (Link to setup environment using miniforge: Link)
+   ```bash
+   pip install -r requirements.txt
+
+## Running the Project
+
+To run LitArt on your local machine:
+
+```bash
+streamlit run app.py
+```
+
+This will create a port that you can open in your browser.
+
+To forward your port to another machine.
+
+```bash
+ssh -L 5000:<YOUR-PORT> <YOUR-CLOUD-LOGIN>
+```
+
+This is to forward your port to https://localhost:5000.com
