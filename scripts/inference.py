@@ -43,7 +43,7 @@ def generate(lora:str,prompt:str='',model_name:str= "CompVis/stable-diffusion-v1
                 negative_prompt="B&w,cropping,open book,no edges, cropped book, small book, other objects,square,edges clipping",
                 guidance_scale=6.5,num_inference_steps=inference_steps).images[0]  
 
-    image.save(f"../sample_output/{file_name}_{hashing}.png")
+    image.save(f"/work/LitArt/sample_outputs/{file_name}_{hashing}.png")
     return image
 
 

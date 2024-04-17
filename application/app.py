@@ -19,16 +19,21 @@ from T5.scripts.t5_inference import summarize_t5
 from Pegasus.scripts.pegasus_inference import summarize_pegasus
 from BART.scripts.bart_inference import summarize_bart
 
+print("Loaded necessary libraries")
+
 
 st.set_page_config(page_title="Book covers", page_icon=":notebook_with_decorative_cover:")
 processing_done = False
 image_generated = False
 summary_text = None
+temperature = 1.0
+sample = "False"
+
 summarizers = {'T5': summarize_t5
               ,'BART':summarize_bart
               ,'Pegasus':summarize_pegasus}
 
-st.sidebar.title("Navigation")    
+st.sidebar.title("Navigation")
 app_mode = st.sidebar.selectbox("Choose the app mode", ["Upload Chapters", "Generate Book Covers"])
 
 def load_lottie_file(path:str):
@@ -37,11 +42,14 @@ def load_lottie_file(path:str):
     return data
 
 @st.cache_data(show_spinner=False)
-def generate_text(chapter:str,sample:bool=False,temperature:int=1,summarizer:str="LLama"):
+def generate_text(chapter:str,sample:bool=False,temperature:int=1,summarizer:str="LLama",max_new_tokens:int=500):
+
+    print(f"Summarizing using : {summarizer}")
+    
     if summarizer=="LLama":
         summary_text = generate_response(chapter=chapter,
                             model_dir="/work/LitArt/nair/outdir/meta-llama-Llama-2-7b-hf-2024-03-21-14:17:13",
-                            max_new_tokens = 500,
+                            max_new_tokens = max_new_tokens,
                             do_sample = sample,
                             temperature = float(temperature),
                             top_p = 0.8,
@@ -54,13 +62,14 @@ def generate_text(chapter:str,sample:bool=False,temperature:int=1,summarizer:str
     return summary_text
 
 @st.cache_data(show_spinner=False)
-def generate_image(prompt:str,book_title:str,adapter:str,num_covers:int=1):
+def generate_image(prompt:str,book_title:str,adapter:str,version:str,num_covers:int=1,inference_steps:int=32):
     covers = []
     for i in range(num_covers):
         book_cover = generate(prompt=prompt,
             model_name="CompVis/stable-diffusion-v1-4",
             file_name=book_title+f"_{time.time()}",
-            lora=f"/work/LitArt/adwait/capstone/trained_adapters/{adapter}_1.1.0/")
+            lora=f"/work/LitArt/adwait/capstone/trained_adapters/{adapter}_{version}/",
+            inference_steps=inference_steps)
         
         covers.append(book_cover)
 
@@ -76,11 +85,12 @@ def clear_cache():
 
 if app_mode == "Upload Chapters":
     st.subheader("Upload Your Chapter Here")
-    summarizer = st.selectbox('Choose the model to be used for summarization',['LLama','BART','T5','Seq2Seq'])
-    if summarizer == 'LLama':
-        temprature = st.select_slider('Choose temprature',[0.5,0.6,0.7,0.8,0.9,1])
-        sample = st.selectbox('Sample',["True","False"])
+    summarizer = st.selectbox('Choose the model to be used for summarization',['LLama','BART','T5','Pegasus'])
 
+    if summarizer == 'LLama':
+        max_tokens = st.text_input("Number of max tokens")
+        temperature = st.select_slider('Choose temperature',[0.5,0.6,0.7,0.8,0.9,1])
+        sample = st.selectbox('Sample',["True","False"])
 
 
     file_type = st.selectbox("Select File Type", ("pdf", "txt", "plain text"))
@@ -92,9 +102,11 @@ if app_mode == "Upload Chapters":
             chapter = uploaded_file.getvalue().decode('utf-8')
             st.write(chapter)
             with st_lottie_spinner(lottie,height=200):
-                summary_text = generate_text(temperature=temprature,
+                summary_text = generate_text(temperature=temperature,
                                             chapter=chapter,
-                                            sample=sample)
+                                            summarizer=summarizer,
+                                            sample=sample,
+                                            max_new_tokens=int(max_tokens))
             processing_done = True 
 
     elif file_type == 'pdf':
@@ -110,19 +122,24 @@ if app_mode == "Upload Chapters":
                 chapter += page.extractText()
 
             with st_lottie_spinner(lottie,height=200):
-                summary_text = generate_text(temperature=temprature,
+                summary_text = generate_text(temperature=temperature,
                                             chapter=chapter,
-                                            sample=sample)
+                                            summarizer=summarizer,
+                                            sample=sample,
+                                            max_new_tokens=int(max_tokens))
             processing_done = True 
 
     else:
         text_input = st.text_area("Write your text here")
-        if text_input is not None:
+        if text_input != '':
             lottie = load_lottie_file("../utilities/anime.json")
             with st_lottie_spinner(lottie,height=200):
-                summary_text = generate_text(temperature=temprature,
+                summary_text = generate_text(temperature=temperature,
                                         chapter=text_input,
-                                        sample=sample)
+                                        summarizer=summarizer,
+                                        sample=sample,
+                                        max_new_tokens=int(max_tokens))
+                                        
                 st.success("Summary created successfully!")
 
                 processing_done = True 
@@ -133,8 +150,9 @@ if summary_text:
 if app_mode == "Generate Book Covers":
     st.subheader("Generate Book Covers")
     lottie = load_lottie_file("../utilities/Image_gen.json")
-
     adapter = st.selectbox("Select an adapter",['fiction','fantasy','suspense','speculative_fiction'])
+    version = st.selectbox("Select adapter version",['1.1.0','2.1.0','3.0.1'])
+    inference_steps = st.text_input("Enter number of inference steps")
     title = st.text_input("Enter book title")
     num_covers = st.select_slider("Number of Book covers",[1,2,3])
     prompt = st.text_area("Enter your prompt here keep it under 30 words ")
@@ -147,7 +165,9 @@ if app_mode == "Generate Book Covers":
             generate_image(prompt=prompt,
                     book_title=title,
                     adapter=adapter,
-                    num_covers=int(num_covers))
+                    version=version,
+                    num_covers=int(num_covers),
+                    inference_steps=int(inference_steps))
             
         torch.cuda.empty_cache()
         image_generated = True
@@ -155,6 +175,8 @@ if app_mode == "Generate Book Covers":
 
 if processing_done :
     adapter = st.selectbox("Select an adapter",['fiction','fantasy','suspense','speculative_fiction'])
+    version = st.selectbox("Select adapter version",['1.1.0','2.1.0','3.0.1'])
+    inference_steps = st.text_input("Enter number of inference steps")
     title = st.text_input("Enter book title")
     num_covers = st.select_slider("Number of Book covers",[1,2,3])
     button_clicked = st.button("Generate Book Covers")
@@ -166,7 +188,9 @@ if processing_done :
             generate_image(prompt=prompt,
                     book_title=title,
                     adapter=adapter,
-                    num_covers=int(num_covers))
+                    version=version,
+                    num_covers=int(num_covers),
+                    inference_steps=int(inference_steps))
         
         torch.cuda.empty_cache()
         image_generated = True
