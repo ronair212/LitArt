@@ -21,12 +21,10 @@ conda create -n <ENV-NAME> python=3.9
 ### Troubleshoot
 
 If you face ``` segmentation fault``` as an error while generating images do as follows: <br>
-1. ```bash
+```bash
    module load anaconda3/2022.05
-   ```
-2. ```bash
     module load cuda/12.1
-   ```
+```
 
 Load the version that is already installed on your machine
 
