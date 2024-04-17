@@ -73,6 +73,8 @@ Generator
   --lora=True \
 ```
 
+You can tweak the flags mentioned above to try different configurations for the stable diffusion model
+
 ## Libraries and Tools Used
 
 - Streamlit - Web framework
