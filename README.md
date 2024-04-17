@@ -2,6 +2,11 @@
 
 Welcome to the LitArt repository! This project merges the beauty of literature with digital innovation to create immersive experiences for literature enthusiasts.
 
+## Demo
+
+[![Watch the video](path_to_thumbnail_image.jpg)](https://youtu.be/a37PRIFudGw)
+
+
 ## Introduction
 
 LitArt is a platform that combines literary analysis with interactive technology, offering tools and features that enhance the reader's and writer's experience. Our goal is to make literary works more accessible and engaging through modern technology, providing insightful analyses, interactive content, and a community for literature lovers.
