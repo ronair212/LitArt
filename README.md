@@ -4,8 +4,7 @@ Welcome to the LitArt repository! This project merges the beauty of literature w
 
 ## Demo
 
-[![Watch the video](path_to_thumbnail_image.jpg)](https://youtu.be/a37PRIFudGw)
-
+https://github.com/ronair212/LitArt/assets/78248225/32e2aa62-3a99-4fb1-9085-cd5db2b0ac10
 
 ## Introduction
 
