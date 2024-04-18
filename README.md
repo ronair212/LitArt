@@ -94,6 +94,5 @@ You can tweak the flags mentioned above to try different configurations for the 
 ## Libraries and Tools Used
 
 - Streamlit - Web framework
-- Transformer, diffuser, PEFT - Model fine tuning and training
+- Transformer, diffuser, PEFT - Model fine-tuning and training
 - Pytorch Lighting - Framework
-=======
